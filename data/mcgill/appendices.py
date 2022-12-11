@@ -579,6 +579,8 @@ b3_neutral_citations_en = np.array([
     ["Canada", "Tax Court of Canada", "TCC", "2003-01"],
     ["Canada", "Court Martial Appeal Court of Canada", "CMAC", "2001-10"],
     ["Alberta", "Court of Appeal", "ABCA", "1998-01"],
+    ["Alberta", "Supreme Court of Alberta Appeal Division", "ALTASCAD",
+        "1970-01"],
     ["Alberta", "Court of Queen's Bench", "QB", "1998-01"],
     ["Alberta", "Provincial Court", "ABPC", "1998-01"],
     ["British Columbia", "Court of Appeal", "BCCA", "1999-01"],
@@ -723,7 +725,7 @@ c1_canadian_official_reporters_fr = {
 }
 
 '''
-Start with the starred reporters and add the rest later. 
+Start with the starred reporters and add the rest later.
 '''
 
 c2_all_reporters = np.array([
@@ -741,10 +743,10 @@ c2_all_reporters = np.array([
     ["BCLR (5th)", "British Columbia Law Reports (Fifth Series)",
         "Can (BC)", "Yes/Oui"],
     ["A", "Atlantic Reporter", "US/É-U", "No/Non"],
-    ["BR", 
+    ["BR",
         "Recueils de jurisprudence du Québec: Cour du Banc de la Reine/du Roi",
         "Can (QC)", "Yes/Oui"],
-    ["BR", 
+    ["BR",
         "Rapports judiciaires officiels de Québec: Cour du Banc de la Reine/du\
         Roi", "Can (QC)", "Yes/Oui"],
     ["CA", "Recueil de jurisprudence du Québec: Cour d'appel", "Can (QC)",
@@ -905,6 +907,5 @@ c2_all_reporters = np.array([
     ["ALR", "Australian Law Reports", "Austl", "No/Non"],
     ["Alta BAA", "Alberta Board of Arbitration, Arbitrations under the Alberta\
         Labour Act", "Can (AB)", "No/Non"],
-    
 
 ])
