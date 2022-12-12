@@ -51,7 +51,7 @@ def case_info(url: str) -> str:
     # Returns the caseID, databaseID, and language
     return language, database_id, case_id
 
-def call_api(url: str) -> str:
+def call_api_jurisprudence(url: str) -> str:
     '''
     Calls the CanLII API and returns the JSON file.
     '''
