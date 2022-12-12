@@ -18,14 +18,9 @@ Legal work lives and dies around documents. Even for so-called "trial lawyers" l
 
 Not every law school professor, legal office, or senior/supervising partner will care about correct citations. But enough of them will and do to make an app like this worthwhile. Correctly citing various sources in legal documents can be tricky, tedious, and incredibly time consuming. Having this process automated while I was in law school was a lifesaver, and although I don't rely on citations as much as I used to, having this process automated once again will greatly improve my workflow. I expect that there are many others in my situation who would feel similarly.
 
-## What are a legal citation's components?
+## Where to begin?
 
-### Case
-
-* Style of cause
-* Neutral citation
-* Print reporter
-* Pinpoint
+Case law on CanLII.
 
 ## Who has the data?
 
@@ -37,7 +32,36 @@ The "McGill Guide" is the go-to source for most legal citations in Canada. This 
 
 CanLII is a free and accessible database of Canadian legal decisions, statutes, and journal articles. It is non-profit and funded by Canadian Law Societies. It is my leading source for case law and statutes in practice, and will very likely be the leading source for this material in this project.
 
+### Court websites
+
+Where courts have their own expectations about how to cite documents, they will usually provide a citation guideline. This tends to either take form as an official document or as a notice to the profession.
+
 ### Westlaw, Quicklaw, HeinOnline and other proprietary sources
 
 Proprietary sources are unlikely to be a good source of data, despite being widely available to lawyers and law students. Companies like Thompson Reuters and LexisNexis offer their own comparable (albeit incredibly expensive) services and aren't likely to play nice. HeinOnline is much smaller but still appears to be a closed ecosystem.
 
+## What are a legal citation's components?
+
+### Jurisprudence (i.e. case law)
+
+Generally, legal citations contain the following components:
+
+* **Style of cause**: Lists the parties to an action.
+* Main citation
+* Pinpoint
+* Parallel citation
+
+The McGill Guide 9e also includes:
+
+* **Short form**:
+
+Example:
+
+> The state may be authorized to search private property without a warrant if the law authorizes the search, the authorizing law is reasonable, and the search itself was conducted reasonably (see *R v Jones*, 2017 SCC 60 at para 57, [2017] 2 SCR 696 [*Jones*]).
+
+Using the form {*style_of_cause*}, {main_citation} at {pinpoint}, {parallel citation}, the above citation can be broken down into those four components as follows:
+
+* style_of_cause: *R v Jones*
+* main_citation: 2017 SCC 60 (a neutral citation)
+* pinpoint: para 57 (the formal paragraph #)
+* parallel citation: [2017] 2 SCR 696 (the Supreme Court of Canada's official court reporter)
