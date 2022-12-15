@@ -1,23 +1,15 @@
 '''
 CanLII API calls
 '''
-import json
 # import datetime
-# import numpy as np
 import requests
+from decouple import config
 
 def get_api_key() -> str:
     '''
     Retrieves the CanLII API key from the file system.
     '''
-    canlii_api_key: str = "data/api/CANLII_API_KEY"
-    try:
-        with open(canlii_api_key, 'r', encoding="utf-8") as file:
-            api_key: str = file.read()
-        return api_key
-    except FileNotFoundError:
-        print(f"{canlii_api_key} not found")
-        return None
+    return config('CANLII_API_KEY')
 
 def case_info(url: str) -> str:
     '''
@@ -79,8 +71,8 @@ def call_api_jurisprudence(url: str) -> str:
     language, database_id, case_id = api_elements
     
     # CanLII API URL
-    url: str = "https://api.canlii.org/v1/caseBrowse/" + language + "/" + \
-        database_id + "/" + case_id + "/?api_key=" + api_key
+    url: str = f"https://api.canlii.org/v1/caseBrowse/{language}/"\
+        f"{database_id}/{case_id}/?api_key={api_key}"
     # Downloads the JSON file
     response = requests.get(url, timeout=50)
     # Converts the JSON file to a Python dictionary
