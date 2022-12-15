@@ -30,7 +30,7 @@ def case_info(url: str) -> str:
     if CANLII_LONG not in url:
         print("Invalid URL.")
         return None
-    
+
     # Removes query terms from the URL, if any
     if "?" in url:
         url = url.split('?')[0]
@@ -69,7 +69,7 @@ def call_api_jurisprudence(url: str) -> str:
     if api_elements is None:
         return None
     language, database_id, case_id = api_elements
-    
+
     # CanLII API URL
     url: str = f"https://api.canlii.org/v1/caseBrowse/{language}/"\
         f"{database_id}/{case_id}/?api_key={api_key}"
@@ -79,4 +79,3 @@ def call_api_jurisprudence(url: str) -> str:
     data = response.json()
     # Returns the JSON file
     return data
-    
