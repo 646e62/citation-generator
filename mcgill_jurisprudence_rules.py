@@ -89,7 +89,8 @@ def isolate_parallel_citations(other_citations: str) -> str:
 
     return citation_list_parsed, parallel_reporter_list
 
-def check_preferred_reporters(parallel_reporters: list): # -> str:
+def check_preferred_reporters(parallel_reporters: list,
+                              parallel_citations: list): # -> str:
     '''
     Checks to see which of the parallel citations are preferred. The
     function evaluates each list item and determines whether the citation
@@ -109,19 +110,28 @@ def check_preferred_reporters(parallel_reporters: list): # -> str:
     # or unofficial
 
     for reporter in parallel_reporters:
-        print(reporter)
         # Add official reporter functionality
         for item in reporter_data.preferred_reporters:
-            if reporter == item[0]:
-                preferred_reporters.append(reporter)
+            # Run through the list of preferred reporters
+            # If the reporter is in the list, add the citation at the same
+            # index to the preferred_reporters list
+
+            if reporter in item:
+                preferred_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
+                break
+        
         for item in reporter_data.authoritative_reporters:
-            if reporter == item[0]:
-                authoritative_reporters.append(reporter)
-        else:
-            unofficial_reporters.append(reporter)
-    return f"Preferred reporters: {preferred_reporters}",\
-            f"Authoritative reporters: {authoritative_reporters}",\
-            f"Unofficial reporters: {unofficial_reporters}"
+            if reporter in item:
+                authoritative_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
+                break
+        
+        unofficial_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
+        
+        
+
+    return f"Preferred citations: {preferred_reporters}",\
+            f"Authoritative citations: {authoritative_reporters}",\
+            f"Unofficial citations: {unofficial_reporters}"
 
 def enter_pinpoint() -> str:
     '''
@@ -182,8 +192,12 @@ def generate_citation(url) -> str:
         parallel_citations, parallel_reporters = \
             isolate_parallel_citations(parallel_citation_string)
 
+        return check_preferred_reporters(parallel_reporters,
+                                         parallel_citations)
+
         # Move everything into the function and remove the following code
         # *****
+        '''
         preferred_reporters = []
         authoritative_reporters = []
         unofficial_reporters = []
@@ -205,4 +219,5 @@ def generate_citation(url) -> str:
                f"Authoritative reporters: {authoritative_reporters}",\
                f"Unofficial reporters: {unofficial_reporters}"
         # *****
+        '''
 
