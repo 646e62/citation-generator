@@ -1,6 +1,7 @@
 '''
 This module generates McGill 9e Jurisprudence citations.gener
 '''
+import sys
 
 from api_calls import call_api_jurisprudence
 import data.mcgill.reporter_data as reporter_data
@@ -123,6 +124,7 @@ def check_preferred_reporters(parallel_reporters: list): # -> str:
             f"Authoritative reporters: {authoritative_reporters}",\
             f"Unofficial reporters: {unofficial_reporters}"
 
+
 def enter_pinpoint() -> str:
     '''
     Asks the user to enter a pinpoint. The function returns the pinpoint.
@@ -132,6 +134,7 @@ def enter_pinpoint() -> str:
         return pinpoint
     except ValueError:
         return "Invalid pinpoint."
+
 
 def generate_citation(url) -> str:
     '''
@@ -206,3 +209,11 @@ def generate_citation(url) -> str:
                f"Unofficial reporters: {unofficial_reporters}"
         # *****
 
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        sys.exit("Call script with url")
+
+    url = sys.argv[1]
+    ret = generate_citation(url)
+    print(ret)
