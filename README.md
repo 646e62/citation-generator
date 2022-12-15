@@ -47,21 +47,26 @@ Proprietary sources are unlikely to be a good source of data, despite being wide
 Generally, legal citations contain the following components:
 
 * **Style of cause**: Lists the parties to an action.
-* Main citation
-* Pinpoint
-* Parallel citation
+* Main citation: The most authoritative citation should be used as the main citation. Where a neutral citation is available, it becomes the main citation.
+* Pinpoint: Points to the page, paragraph, section being referred to. May also be used to express ranges (eg "ss 24 - 35", "paras 2 - 4", etc). The pinpoint should direct to the page, paragraph, or section (or range) as they appear in the main citation.
+* Parallel citation: Provides the reader with other sources citing the same case. Usually no more than two should be included. Parallel citations are added according to a hierarchical order:
+  * Official reporters
+  * Preferred reporters (see McGill 9e Appendix C2)
+  * Authoritative reporters
+  * Unofficial reporters
 
 The McGill Guide 9e also includes:
 
-* **Short form**:
+* **Short form**: Used both in footnotes and in-text whenever referring to the citation. Subsequent short form uses should be accompanied by a pinpoint (eg, "See *Jones* at para 57.")
 
 Example:
 
 > The state may be authorized to search private property without a warrant if the law authorizes the search, the authorizing law is reasonable, and the search itself was conducted reasonably (see *R v Jones*, 2017 SCC 60 at para 57, [2017] 2 SCR 696 [*Jones*]).
 
-Using the form {*style_of_cause*}, {main_citation} at {pinpoint}, {parallel citation}, the above citation can be broken down into those four components as follows:
+Using the form {*style_of_cause*}, {main_citation} at {pinpoint}, {parallel citation}, the above citation can be broken down into those components as follows:
 
 * style_of_cause: *R v Jones*
 * main_citation: 2017 SCC 60 (a neutral citation)
 * pinpoint: para 57 (the formal paragraph #)
 * parallel citation: [2017] 2 SCR 696 (the Supreme Court of Canada's official court reporter)
+* short_form: [*Jones*]
