@@ -167,10 +167,10 @@ preferred_reporters = [
     ["BCLR (5th)", "British Columbia Law Reports (Fifth Series)",
         "Can (BC)"],
     ["A", "Atlantic Reporter", "US/É-U", "No/Non"],
-    ["BR", 
+    ["BR",
         "Recueils de jurisprudence du Québec: Cour du Banc de la Reine/du Roi",
         "Can (QC)"],
-    ["BR", 
+    ["BR",
         "Rapports judiciaires officiels de Québec: Cour du Banc de la Reine/du\
         Roi", "Can (QC)"],
     ["CA", "Recueil de jurisprudence du Québec: Cour d'appel", "Can (QC)",

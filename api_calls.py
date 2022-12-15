@@ -1,7 +1,6 @@
 '''
 CanLII API calls
 '''
-import re
 import json
 # import datetime
 # import numpy as np
@@ -29,27 +28,44 @@ def case_info(url: str) -> str:
     scheme (https) and subdomain (www). If so, they're removed. If CanLII
     changes their URL structure, this function will need to be updated.
     '''
-    # Check to see if the URL is a short URL
-    # Short CanLII URLs use the .ca domain
-    # Full CanLII URLs use the .org domain
-    if "canlii.ca" in url:
-        return "Short URL detected. Please use the long URL."
+    # Check to see if the URL is a short URL. Short CanLII URLs use the .ca
+    # domain, while full CanLII URLs use the .org domain
+    CANLII_SHORT = "canlii.ca"
+    CANLII_LONG = "canlii.org"
+    if CANLII_SHORT in url:
+        print("Short URL detected. Please use the long URL.")
+        return None
+    if CANLII_LONG not in url:
+        print("Invalid URL.")
+        return None
+    
     # Removes query terms from the URL, if any
     if "?" in url:
         url = url.split('?')[0]
+    if "/" not in url:
+        return None
     url = url.split('/')
+
+    # If the URL list contains less than 8 items, it's not a valid CanLII URL
+    if len(url) < 8:
+        return None
     case_id: str = url[-2]
     database_id: str = url[-5]
     language: str = url[-7]
-    # Checks to see if the string starts with four numbers
-    # Returns the caseID if it does
-    if not re.match(r"^\d{4}", case_id):
-        return "Invalid URL."
-    # Properly formats SCC database IDs
     if database_id == "scc":
         database_id = "csc-scc"
-    # Returns the caseID, databaseID, and language
-    return language, database_id, case_id
+
+    # Rudimentary error checking
+    # Verifies whether case_id begins with four digits
+    # Future versions should check to see whether the middle case_id component
+    # follows the correct format (ie, jurisdiction-court/reporter string
+    # followed by an identifying number)
+    if case_id[:4].isdigit():
+        # Returns the caseID, databaseID, and language
+        return language, database_id, case_id
+    else:
+        print("Invalid URL")
+        return None
 
 def call_api_jurisprudence(url: str) -> str:
     '''
@@ -57,16 +73,18 @@ def call_api_jurisprudence(url: str) -> str:
     '''
     api_key: str = get_api_key()
     api_elements = case_info(url)
-    language = api_elements[0]
-    database_id = api_elements[1]
-    case_id = api_elements[2]
+
+    if api_elements is None:
+        return None
+    language, database_id, case_id = api_elements
+    
     # CanLII API URL
     url: str = "https://api.canlii.org/v1/caseBrowse/" + language + "/" + \
         database_id + "/" + case_id + "/?api_key=" + api_key
     # Downloads the JSON file
     response = requests.get(url, timeout=50)
     # Converts the JSON file to a Python dictionary
-    data = json.loads(response.text)
+    data = response.json()
     # Returns the JSON file
     return data
     
