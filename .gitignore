@@ -1,5 +1,6 @@
 # API keys
 data/api/
+*.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
