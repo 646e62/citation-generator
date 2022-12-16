@@ -46,10 +46,10 @@ def isolate_parallel_citations(other_citations: str) -> str:
     etc.). This will be added in the near future.
     '''
 
-    # Creates lists of citation and reporter elements to exclude
-    # These lists are (very likely) incomplete
-    citation_exclude_list = ["(QL)"]
-    reporter_exclude_list = ["No"]
+    # Creates (likely incomplete sets of citation and reporter elements to
+    # exclude
+    excluded_citations = ("(QL)")
+    excluded_reporters = ("No")
 
     # Creates a list of parallel citations if the user copied the citations
     # from CanLII
@@ -68,11 +68,11 @@ def isolate_parallel_citations(other_citations: str) -> str:
         # Light formatting
         for item in citation_split:
             # Remove items that are in the exclude list
-            if item in citation_exclude_list:
+            if item in excluded_citations:
                 citation_split.remove(item)
                 case = " ".join(citation_split)
             # Adds the parallel reporter
-            if item.isalpha() and item not in reporter_exclude_list:
+            if item.isalpha() and item not in excluded_reporters:
                 # Remove the periods from the reporter
                 item = item.replace(".", "")
                 parallel_reporter_list.append(item)
@@ -87,11 +87,11 @@ def isolate_parallel_citations(other_citations: str) -> str:
 
         citation_list_parsed.append(case)
 
-
     return citation_list_parsed, parallel_reporter_list
 
 def check_preferred_reporters(parallel_reporters: list,
-                              parallel_citations: list): # -> str:
+                              parallel_citations: list,
+                              scr_in_title: str): # -> str:
     '''
     Checks to see which of the parallel citations are preferred. The
     function evaluates each list item and determines whether the citation
@@ -107,33 +107,42 @@ def check_preferred_reporters(parallel_reporters: list,
     authoritative_reporters = []
     unofficial_reporters = []
 
+    if scr_in_title:
+        official_reporters.append(scr_in_title)
+
     # Categorizes the parallel reporters as preferred, authoritative,
     # or unofficial
-
     for reporter in parallel_reporters:
+        # *****
         # Add official reporter functionality
-        for item in reporter_data.preferred_reporters:
-            # Run through the list of preferred reporters
-            # If the reporter is in the list, add the citation at the same
-            # index to the preferred_reporters list
+        # *****
+        corresponding_citation = parallel_citations[
+            parallel_reporters.index(reporter)]
 
+        for item in reporter_data.official_reporters:
             if reporter in item:
-                preferred_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
+                official_reporters.append(corresponding_citation)
                 break
-        
+
+        for item in reporter_data.preferred_reporters:
+            if reporter in item:
+                preferred_reporters.append(corresponding_citation)
+                break
+
         for item in reporter_data.authoritative_reporters:
             if reporter in item:
-                authoritative_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
+                authoritative_reporters.append(corresponding_citation)
                 break
-        
-        unofficial_reporters.append(parallel_citations[parallel_reporters.index(reporter)])
-        
-        
 
-    return f"Preferred citations: {preferred_reporters}",\
-            f"Authoritative citations: {authoritative_reporters}",\
-            f"Unofficial citations: {unofficial_reporters}"
+        if corresponding_citation not in preferred_reporters and \
+            corresponding_citation not in authoritative_reporters and \
+            corresponding_citation not in official_reporters:
+            unofficial_reporters.append(corresponding_citation)
 
+    return {"official": official_reporters,\
+            "preferred": preferred_reporters,\
+            "authoritative": authoritative_reporters,\
+            "unofficial": unofficial_reporters}
 
 def enter_pinpoint() -> str:
     '''
@@ -179,56 +188,50 @@ def generate_citation(url) -> str:
         # citations when the citation is available. It is also good practice
         # to include the SCR citation whenever possible, as it is for an
         # official reporter.
+
+        # Refactor to feed the SCR citation into the check_preferred_reporters
+        # function
+
         if "SCR" in parsed_citation:
             official_reporter_citation = " ".join(neutral_citation_list[-4:])
+        else:
+            official_reporter_citation = None
+        if official_reporter_citation:
             citation = f"*{style_of_cause}*, {neutral_citation} at "\
                 f"para {pinpoint}, {official_reporter_citation}."
         else:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
-        return citation
+
+        return citation, official_reporter_citation
+
     else:
-        parallel_citation_string = input("Enter the unofficial reporters"\
+        return generate_parallel_citation(official_reporter_citation)
+
+    # Define some rules for adding parallel citations to cases with and without
+    # neutral citations
+
+def generate_parallel_citation(scr_in_title: str) -> dict:
+    '''
+    Produces a list of parallel citations from a string when called.
+    '''
+    parallel_citation_string = input("Enter the unofficial reporters"\
             "by copying them directly from a CanLII case or separating"\
             "them with commas: ")
 
-        parallel_citations, parallel_reporters = \
-            isolate_parallel_citations(parallel_citation_string)
+    parallel_citations, parallel_reporters = \
+        isolate_parallel_citations(parallel_citation_string)
 
-        return check_preferred_reporters(parallel_reporters,
-                                         parallel_citations)
+    parallel_reporters = check_preferred_reporters(parallel_reporters,
+                                                    parallel_citations,
+                                                    scr_in_title)
 
-        # Move everything into the function and remove the following code
-        # *****
-        '''
-        preferred_reporters = []
-        authoritative_reporters = []
-        unofficial_reporters = []
-
-        # Categorizes the parallel reporters as preferred, authoritative,
-        # or unofficial
-
-        for reporter in parallel_reporters:
-            print(reporter)
-            for item in reporter_data.preferred_reporters:
-                if reporter == item[0]:
-                    preferred_reporters.append(reporter)
-            for item in reporter_data.authoritative_reporters:
-                if reporter == item[0]:
-                    authoritative_reporters.append(reporter)
-            else:
-                unofficial_reporters.append(reporter)
-        return f"Preferred reporters: {preferred_reporters}",\
-               f"Authoritative reporters: {authoritative_reporters}",\
-               f"Unofficial reporters: {unofficial_reporters}"
-        # *****
-        '''
-
+    return parallel_reporters
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit("Call script with url")
 
-    url = sys.argv[1]
-    ret = generate_citation(url)
+    URL = sys.argv[1]
+    ret = generate_citation(URL)
     print(ret)
