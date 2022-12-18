@@ -1,0 +1,13 @@
+<h1>Latest poll questions</h1>
+{% if latest_question_list %}
+    <p>With this, I can just type stuff in and have it appear as an HTML webpage</p>
+    <p>I can also throw some python into there as well. The future is now.</p>
+    <ul>
+    {% for question in latest_question_list %}
+    <li><a href="{% url 'detail' question.id %}">{{ question.question_text }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}
+
