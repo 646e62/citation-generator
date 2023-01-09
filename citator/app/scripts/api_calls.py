@@ -5,6 +5,12 @@ CanLII API calls
 import requests
 from decouple import config
 
+# Short CanLII URLs use the .ca domain, while full CanLII URLs use the .org
+# domain
+CANLII_SHORT = "canlii.ca"
+CANLII_LONG = "canlii.org"
+REQ_CANLII_URL_COMPONENTS = 8
+
 def get_api_key() -> str:
     '''
     Retrieves the CanLII API key from the file system.
@@ -20,10 +26,7 @@ def case_info(url: str) -> str:
     scheme (https) and subdomain (www). If so, they're removed. If CanLII
     changes their URL structure, this function will need to be updated.
     '''
-    # Check to see if the URL is a short URL. Short CanLII URLs use the .ca
-    # domain, while full CanLII URLs use the .org domain
-    CANLII_SHORT = "canlii.ca"
-    CANLII_LONG = "canlii.org"
+    
     if CANLII_SHORT in url:
         print("Short URL detected. Please use the long URL.")
         return None
@@ -38,8 +41,7 @@ def case_info(url: str) -> str:
         return None
     url = url.split('/')
 
-    # If the URL list contains less than 8 items, it's not a valid CanLII URL
-    if len(url) < 8:
+    if len(url) < REQ_CANLII_URL_COMPONENTS:
         return None
     case_id: str = url[-2]
     database_id: str = url[-5]
@@ -70,12 +72,10 @@ def call_api_jurisprudence(url: str) -> str:
         return None
     language, database_id, case_id = api_elements
 
-    # CanLII API URL
+    # CanLII API URL call structure
     url: str = f"https://api.canlii.org/v1/caseBrowse/{language}/"\
         f"{database_id}/{case_id}/?api_key={api_key}"
-    # Downloads the JSON file
     response = requests.get(url, timeout=50)
     # Converts the JSON file to a Python dictionary
     data = response.json()
-    # Returns the JSON file
     return data
