@@ -1,4 +1,4 @@
-# citation-detector
+# citation-generator
 
 ## The project
 
