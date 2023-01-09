@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+
+	<div class="title">
+    		<h1>Citator</h1>
+	</div>
+
+	<div class="header">
+
+		<a href="/changelog">Change Log</a>
+		<br><br>
+	</div>
+	<div class="input">
+		{% csrf_token %}
+
+		<label for="text_field">Enter a CanLII URL:</label>
+		<form action="{% url 'process_text' %}" method="post">
+			{% csrf_token %}
+    			<input type='text' name='text_field' id='text-field'>
+    			<input type='submit' value='Submit'>
+
+		</form>
+		<label for="pinpoint_checkbox">Pinpoint:</label>
+		<input type="checkbox" id="pinpoint_checkbox" name="pinpoint_checkbox">
+		
+	</div>
+
+</body>
+
+</html>
+

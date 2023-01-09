@@ -3,8 +3,8 @@ This module generates McGill 9e Jurisprudence citations.gener
 '''
 import sys
 
-from api_calls import call_api_jurisprudence
-import data.mcgill.reporter_data as reporter_data
+from .api_calls import call_api_jurisprudence
+from .data.mcgill import reporter_data as reporter_data
 
 # Functions for the McGill 9e Jurisprudence class
 
@@ -142,7 +142,7 @@ def generate_citation(url) -> str:
     cases that use neutral citations. Citations using printed reporters will
     be added in the near future.
     '''
-    # Calls the CanLII API
+    # Calls the CanLII API 
     data = call_api_jurisprudence(url)
     if data is None:
         return "Invalid URL."

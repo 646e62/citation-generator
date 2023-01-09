@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+
+	<div id="title">
+		<h1>Change Log</h1>
+		<a href="/">Home</a>
+	</div>
+
+	<div id="content">
+		{% block content %}
+			{% for changes in changelog %}
+				<h2>Version {{ changes.version }}</h2>	
+				<p>{{ changes.date }}</p>
+				<p>{{ changes.changelog }}</p>
+			{% endfor %}
+		{% endblock %}
+	</div>
+
+</body>
+</html>
+
