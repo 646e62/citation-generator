@@ -26,7 +26,7 @@ def case_info(url: str) -> str:
     scheme (https) and subdomain (www). If so, they're removed. If CanLII
     changes their URL structure, this function will need to be updated.
     '''
-    
+
     if CANLII_SHORT in url:
         print("Short URL detected. Please use the long URL.")
         return None

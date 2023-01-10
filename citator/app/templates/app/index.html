@@ -21,16 +21,14 @@
 	<div class="input">
 		{% csrf_token %}
 
-		<label for="text_field">Enter a CanLII URL:</label>
+		<label for="url">Enter a CanLII URL:</label>
 		<form action="{% url 'process_text' %}" method="post">
 			{% csrf_token %}
-    			<input type='text' name='text_field' id='text-field'>
-    			<input type='submit' value='Submit'>
-
+      <input type="text" name='url' id='url'>
+      <label for="pinpoint">Pinpoint:</label>
+      <input type="number" min="1" id="pinpoint" name="pinpoint">
+ 			<input type='submit' value='Submit'>
 		</form>
-		<label for="pinpoint_checkbox">Pinpoint:</label>
-		<input type="checkbox" id="pinpoint_checkbox" name="pinpoint_checkbox">
-		
 	</div>
 
 </body>
