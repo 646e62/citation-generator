@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %} {% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+
+<body>
+	<div id="content">
+		{% block content %}
+		{% endblock %}
+	</div>
+
+	<div id="sidebar">
+		<h1>Change Log</h1>
+		<p>Version 0.0.1</p>
+	</div>
+</body>
+</html>
+

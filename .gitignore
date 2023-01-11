@@ -1,5 +1,6 @@
 # API keys
 data/api/
+citator/app/scripts/.env
 *.env
 
 # Byte-compiled / optimized / DLL files

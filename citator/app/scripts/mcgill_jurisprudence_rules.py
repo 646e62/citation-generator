@@ -3,8 +3,8 @@ This module generates McGill 9e Jurisprudence citations.gener
 '''
 import sys
 
-from api_calls import call_api_jurisprudence
-import data.mcgill.reporter_data as reporter_data
+from .api_calls import call_api_jurisprudence
+from .data.mcgill import reporter_data as reporter_data
 
 # Functions for the McGill 9e Jurisprudence class
 
@@ -22,7 +22,7 @@ def verify_neutral_citation(neutral_citation: str,
             return True
     return False
 
-def isolate_parallel_citations(other_citations: str) -> str:
+def isolate_parallel_citations(other_citations: str) -> tuple[str, str]:
     '''
     The function returns a list of parallel citations inferred from a block
     of text copied and pasted by the user.
@@ -46,10 +46,10 @@ def isolate_parallel_citations(other_citations: str) -> str:
     etc.). This will be added in the near future.
     '''
 
-    # Creates lists of citation and reporter elements to exclude
-    # These lists are (very likely) incomplete
-    citation_exclude_list = ["(QL)"]
-    reporter_exclude_list = ["No"]
+    # Creates (likely incomplete sets of citation and reporter elements to
+    # exclude
+    excluded_citations = ("(QL)")
+    excluded_reporters = ("No")
 
     # Creates a list of parallel citations if the user copied the citations
     # from CanLII
@@ -68,11 +68,11 @@ def isolate_parallel_citations(other_citations: str) -> str:
         # Light formatting
         for item in citation_split:
             # Remove items that are in the exclude list
-            if item in citation_exclude_list:
+            if item in excluded_citations:
                 citation_split.remove(item)
                 case = " ".join(citation_split)
             # Adds the parallel reporter
-            if item.isalpha() and item not in reporter_exclude_list:
+            if item.isalpha() and item not in excluded_reporters:
                 # Remove the periods from the reporter
                 item = item.replace(".", "")
                 parallel_reporter_list.append(item)
@@ -87,10 +87,11 @@ def isolate_parallel_citations(other_citations: str) -> str:
 
         citation_list_parsed.append(case)
 
-
     return citation_list_parsed, parallel_reporter_list
 
-def check_preferred_reporters(parallel_reporters: list): # -> str:
+def check_preferred_reporters(parallel_reporters: list,
+                              parallel_citations: list,
+                              scr_in_title: str): # -> str:
     '''
     Checks to see which of the parallel citations are preferred. The
     function evaluates each list item and determines whether the citation
@@ -110,19 +111,34 @@ def check_preferred_reporters(parallel_reporters: list): # -> str:
     # or unofficial
 
     for reporter in parallel_reporters:
-        print(reporter)
-        # Add official reporter functionality
+        '''
+        Add official reporter functionality
+        '''
+        corresponding_citation = parallel_citations[
+            parallel_reporters.index(reporter)]
+
+        for item in reporter_data.official_reporters:
+            if reporter in item:
+                official_reporters.append(corresponding_citation)
+                break
         for item in reporter_data.preferred_reporters:
-            if reporter == item[0]:
-                preferred_reporters.append(reporter)
+            if reporter in item:
+                preferred_reporters.append(corresponding_citation)
+                break
         for item in reporter_data.authoritative_reporters:
-            if reporter == item[0]:
-                authoritative_reporters.append(reporter)
-        else:
-            unofficial_reporters.append(reporter)
-    return f"Preferred reporters: {preferred_reporters}",\
-            f"Authoritative reporters: {authoritative_reporters}",\
-            f"Unofficial reporters: {unofficial_reporters}"
+            if reporter in item:
+                authoritative_reporters.append(corresponding_citation)
+                break
+
+        if corresponding_citation not in preferred_reporters and \
+            corresponding_citation not in authoritative_reporters and \
+            corresponding_citation not in official_reporters:
+            unofficial_reporters.append(corresponding_citation)
+
+    return {"official": official_reporters,\
+            "preferred": preferred_reporters,\
+            "authoritative": authoritative_reporters,\
+            "unofficial": unofficial_reporters}
 
 
 def enter_pinpoint() -> str:
@@ -136,7 +152,7 @@ def enter_pinpoint() -> str:
         return "Invalid pinpoint."
 
 
-def generate_citation(url) -> str:
+def generate_citation(url, pinpoint: int | None = None) -> str:
     '''
     Generates a citation from the JSON file. This currently only works for
     cases that use neutral citations. Citations using printed reporters will
@@ -161,7 +177,7 @@ def generate_citation(url) -> str:
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
         neutral_citation_list = data["citation"].split()
         neutral_citation = " ".join(neutral_citation_list[:3])
-        pinpoint = enter_pinpoint()
+        pinpoint = pinpoint or enter_pinpoint()
 
         # Adds the SCR printed citation whenever it's available
         # This accords with the official reporter hierarchy in McGill 9e 3.1
@@ -169,51 +185,50 @@ def generate_citation(url) -> str:
         # citations when the citation is available. It is also good practice
         # to include the SCR citation whenever possible, as it is for an
         # official reporter.
+
+        # Refactor to feed the SCR citation into the check_preferred_reporters
+        # function
+
         if "SCR" in parsed_citation:
             official_reporter_citation = " ".join(neutral_citation_list[-4:])
+        else:
+            official_reporter_citation = None
+        if official_reporter_citation:
             citation = f"*{style_of_cause}*, {neutral_citation} at "\
                 f"para {pinpoint}, {official_reporter_citation}."
         else:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
-        return citation
+
+        return citation, official_reporter_citation
+
     else:
-        parallel_citation_string = input("Enter the unofficial reporters"\
+        return generate_parallel_citation(official_reporter_citation)
+
+    # Define some rules for adding parallel citations to cases with and without
+    # neutral citations
+
+def generate_parallel_citation(scr_in_title: str) -> dict:
+    '''
+    Produces a list of parallel citations from a string when called.
+    '''
+    parallel_citation_string = input("Enter the unofficial reporters"\
             "by copying them directly from a CanLII case or separating"\
             "them with commas: ")
 
-        parallel_citations, parallel_reporters = \
-            isolate_parallel_citations(parallel_citation_string)
+    parallel_citations, parallel_reporters = isolate_parallel_citations(
+        parallel_citation_string)
 
-        # Move everything into the function and remove the following code
-        # *****
-        preferred_reporters = []
-        authoritative_reporters = []
-        unofficial_reporters = []
+    parallel_reporters = check_preferred_reporters(
+        parallel_reporters, parallel_citations, scr_in_title)
 
-        # Categorizes the parallel reporters as preferred, authoritative,
-        # or unofficial
-
-        for reporter in parallel_reporters:
-            print(reporter)
-            for item in reporter_data.preferred_reporters:
-                if reporter == item[0]:
-                    preferred_reporters.append(reporter)
-            for item in reporter_data.authoritative_reporters:
-                if reporter == item[0]:
-                    authoritative_reporters.append(reporter)
-            else:
-                unofficial_reporters.append(reporter)
-        return f"Preferred reporters: {preferred_reporters}",\
-               f"Authoritative reporters: {authoritative_reporters}",\
-               f"Unofficial reporters: {unofficial_reporters}"
-        # *****
+    return parallel_reporters
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit("Call script with url")
 
-    url = sys.argv[1]
-    ret = generate_citation(url)
+    URL = sys.argv[1]
+    ret = generate_citation(URL)
     print(ret)
