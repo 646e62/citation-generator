@@ -1,3 +1,5 @@
+
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -24,11 +26,20 @@
 		<label for="url">Enter a CanLII URL:</label>
 		<form action="{% url 'process_text' %}" method="post">
 			{% csrf_token %}
-      <input type="text" name='url' id='url'>
-      <label for="pinpoint">Pinpoint:</label>
-      <input type="number" min="1" id="pinpoint" name="pinpoint">
+     			<input type="text" name='url' id='url'>
+	        	<label for="radio">Choose a pinpoint type:</label>
+     			<label for="pinpoint">Pinpoint # (leave blank if none):</label>
+			<input type="number" min="1" id="pinpoint" name="pinpoint">
+			
  			<input type='submit' value='Submit'>
 		</form>
+
+		<form method="post">
+    			{% csrf_token %}
+    			{{ form.as_p }}
+    			<input type="submit" value="Submit">
+		</form>
+
 	</div>
 
 </body>

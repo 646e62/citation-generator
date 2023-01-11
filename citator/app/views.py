@@ -3,6 +3,7 @@ from django.http import Http404
 from django.http import HttpResponse
 from .models import Changelog
 from .scripts.mcgill_jurisprudence_rules import generate_citation
+from .forms import MyForm
 
 
 def index(request):
