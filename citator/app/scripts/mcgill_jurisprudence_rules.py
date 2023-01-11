@@ -22,7 +22,7 @@ def verify_neutral_citation(neutral_citation: str,
             return True
     return False
 
-def isolate_parallel_citations(other_citations: str) -> str:
+def isolate_parallel_citations(other_citations: str) -> tuple[str, str]:
     '''
     The function returns a list of parallel citations inferred from a block
     of text copied and pasted by the user.
@@ -152,13 +152,13 @@ def enter_pinpoint() -> str:
         return "Invalid pinpoint."
 
 
-def generate_citation(url) -> str:
+def generate_citation(url, pinpoint: int | None = None) -> str:
     '''
     Generates a citation from the JSON file. This currently only works for
     cases that use neutral citations. Citations using printed reporters will
     be added in the near future.
     '''
-    # Calls the CanLII API 
+    # Calls the CanLII API
     data = call_api_jurisprudence(url)
     if data is None:
         return "Invalid URL."
@@ -177,7 +177,7 @@ def generate_citation(url) -> str:
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
         neutral_citation_list = data["citation"].split()
         neutral_citation = " ".join(neutral_citation_list[:3])
-        pinpoint = enter_pinpoint()
+        pinpoint = pinpoint or enter_pinpoint()
 
         # Adds the SCR printed citation whenever it's available
         # This accords with the official reporter hierarchy in McGill 9e 3.1
@@ -185,7 +185,7 @@ def generate_citation(url) -> str:
         # citations when the citation is available. It is also good practice
         # to include the SCR citation whenever possible, as it is for an
         # official reporter.
-        
+
         # Refactor to feed the SCR citation into the check_preferred_reporters
         # function
 
@@ -199,9 +199,9 @@ def generate_citation(url) -> str:
         else:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
-      
+
         return citation, official_reporter_citation
-      
+
     else:
         return generate_parallel_citation(official_reporter_citation)
 
@@ -215,13 +215,12 @@ def generate_parallel_citation(scr_in_title: str) -> dict:
     parallel_citation_string = input("Enter the unofficial reporters"\
             "by copying them directly from a CanLII case or separating"\
             "them with commas: ")
-    
-    parallel_citations, parallel_reporters = \
-        isolate_parallel_citations(parallel_citation_string)
 
-        parallel_reporters = check_preferred_reporters(parallel_reporters,
-                                                    parallel_citations,
-                                                    scr_in_title)
+    parallel_citations, parallel_reporters = isolate_parallel_citations(
+        parallel_citation_string)
+
+    parallel_reporters = check_preferred_reporters(
+        parallel_reporters, parallel_citations, scr_in_title)
 
     return parallel_reporters
 
