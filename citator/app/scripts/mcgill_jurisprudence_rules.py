@@ -5,6 +5,7 @@ import sys
 
 from .api_calls import call_api_jurisprudence
 from .data.mcgill import reporter_data as reporter_data
+from .cache import serialize
 
 # Functions for the McGill 9e Jurisprudence class
 
@@ -169,10 +170,14 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
     for item in reporter_data.neutral_citations_ca:
         neutral_citations.append(item[2])
 
+    
+    # Verifies that the citation is neutral
+    # Is this variable necessary?
+    parsed_citation = data["citation"].split(" ")
+ 
     # Extracts the style of cause and removes all periods
     style_of_cause = data["title"].replace(".", "")
-    # Verifies that the citation is neutral
-    parsed_citation = data["citation"].split(" ")
+
 
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
         neutral_citation_list = data["citation"].split()
@@ -200,7 +205,7 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
 
-        return citation, official_reporter_citation
+        return citation
 
     else:
         return generate_parallel_citation(official_reporter_citation)
