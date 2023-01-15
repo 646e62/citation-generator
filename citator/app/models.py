@@ -4,11 +4,29 @@ from django.utils import timezone
 # Create your models here.
 
 class Citation(models.Model):
-
+    
+    JURISDICTION_CHOICES = (
+        ('CA', 'Canada'),
+        ('BC', 'British Columbia'),
+        ('AB', 'Alberta'),
+        ('SK', 'Saskatchewan'),
+        ('MB', 'Manitoba'),
+        ('ON', 'Ontario'),
+        ('QC', 'Quebec'),
+        ('NB', 'New Brunswick'),
+        ('NS', 'Nova Scotia'),
+        ('PE', 'Prince Edward Island'),
+        ('NL', 'Newfoundland and Labrador'),
+        ('NT', 'Northwest Territories'),
+        ('NU', 'Nunavut'),
+        )
     url = models.URLField(max_length=200)
     short_url = models.URLField(max_length=200)
     language = models.CharField(max_length=2)
-    case_jurisdiction = models.CharField(max_length=2)
+    case_jurisdiction = models.CharField(
+        max_length=2, 
+        choices=JURISDICTION_CHOICES
+        )
     court = models.CharField(max_length=10)
     canlii_citation = models.CharField(max_length=200)
     date = models.DateField()

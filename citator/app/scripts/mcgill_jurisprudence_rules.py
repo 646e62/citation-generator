@@ -204,7 +204,8 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
         else:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
-
+        
+        serialize(url, data)
         return citation
 
     else:
