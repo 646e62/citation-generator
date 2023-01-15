@@ -4,17 +4,35 @@ from django.utils import timezone
 # Create your models here.
 
 class Citation(models.Model):
-
+    
+    JURISDICTION_CHOICES = (
+        ('ca', 'Canada'),
+        ('bc', 'British Columbia'),
+        ('ab', 'Alberta'),
+        ('sk', 'Saskatchewan'),
+        ('mb', 'Manitoba'),
+        ('on', 'Ontario'),
+        ('qc', 'Quebec'),
+        ('nb', 'New Brunswick'),
+        ('ns', 'Nova Scotia'),
+        ('pe', 'Prince Edward Island'),
+        ('nl', 'Newfoundland and Labrador'),
+        ('nt', 'Northwest Territories'),
+        ('nu', 'Nunavut'),
+        )
     url = models.URLField(max_length=200)
+    short_url = models.URLField(max_length=200)
     language = models.CharField(max_length=2)
-    case_jurisdiction = models.CharField(max_length=2)
+    case_jurisdiction = models.CharField(
+        max_length=2, 
+        choices=JURISDICTION_CHOICES
+        )
     court = models.CharField(max_length=10)
     canlii_citation = models.CharField(max_length=200)
     date = models.DateField()
     style_of_cause = models.CharField(max_length=200)
     docket_number = models.CharField(max_length=200)
     keywords = models.CharField(max_length=200)
-    mcgill_citation = models.CharField(max_length=200)
 
     def __str__(self):
         return self.mcgill_citation
@@ -54,3 +72,13 @@ class Changelog(models.Model):
     def __str__(self):
         return self.changelog
 
+class MyModel(models.Model):
+    CHOICES = [
+        ('choice_1', 'Choice 1'),
+        ('choice_2', 'Choice 2'),
+        ('choice_3', 'Choice 3'),
+    ]
+    my_field = models.CharField(max_length=20, choices=CHOICES)
+   
+    def __str__(self):
+        return self.my_field

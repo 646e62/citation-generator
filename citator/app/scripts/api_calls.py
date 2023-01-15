@@ -11,6 +11,39 @@ CANLII_SHORT = "canlii.ca"
 CANLII_LONG = "canlii.org"
 REQ_CANLII_URL_COMPONENTS = 8
 
+def get_database_id(database_id: str) -> str:
+    '''
+    Checks to see whether the URL's databaseID component is the same as the
+    actual databaseID. If not, it returns the actual databaseID. Fixes a problem
+    where hyphenated databaseIDs weren't being recognized.
+    '''
+
+    hyphenated_database_ids = [
+        ["cbsc-ccnr", ["cbsc", "ccnr"]],
+        ["citt-tcce", ["citt", "tcce"]],
+        ["csc-scc-al", ["csc-a", "scc-l"]],
+        ["cci-tcc", ["cci", "tcc"]],
+        ["csc-scc", ["csc", "scc"]],
+        ["casa-cala", ["casa", "cala"]],
+        ["sst-tss", ["sst", "tss"]],
+        ["cmac-cacm", ["cmac", "cacm"]],
+        ["cart-crac", ["cart", "crac"]],
+        ["pcc-cvpc", ["pcc", "cvpc"]],
+        ["sct-trp", ["sct", "trp"]],
+        ["cer-rec", ["cer", "rec"]],
+        ["exchc-cech", ["exchc", "cech"]],
+        ]
+    
+# Run through the hyphenated databaseIDs and check to see whether the 
+# database_id component matches either of the second elements in the list. If
+# so, return the first element in the list as the database_id
+
+    for database in hyphenated_database_ids:
+        if database_id in database[1]:
+            return database[0]
+    return database_id
+
+
 def get_api_key() -> str:
     '''
     Retrieves the CanLII API key from the file system.
@@ -44,10 +77,8 @@ def case_info(url: str) -> str:
     if len(url) < REQ_CANLII_URL_COMPONENTS:
         return None
     case_id: str = url[-2]
-    database_id: str = url[-5]
+    database_id: str = get_database_id(url[-5])
     language: str = url[-7]
-    if database_id == "scc":
-        database_id = "csc-scc"
 
     # Rudimentary error checking
     # Verifies whether case_id begins with four digits
@@ -67,7 +98,6 @@ def call_api_jurisprudence(url: str) -> str:
     '''
     api_key: str = get_api_key()
     api_elements = case_info(url)
-
     if api_elements is None:
         return None
     language, database_id, case_id = api_elements

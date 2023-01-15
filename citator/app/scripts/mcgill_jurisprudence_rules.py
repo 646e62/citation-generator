@@ -3,8 +3,9 @@ This module generates McGill 9e Jurisprudence citations.gener
 '''
 import sys
 
-from .api_calls import call_api_jurisprudence
+from django.utils.safestring import SafeString
 from .data.mcgill import reporter_data as reporter_data
+from .cache import serialize
 
 # Functions for the McGill 9e Jurisprudence class
 
@@ -140,6 +141,16 @@ def check_preferred_reporters(parallel_reporters: list,
             "authoritative": authoritative_reporters,\
             "unofficial": unofficial_reporters}
 
+def generate_pinpoint(pinpoint_number, pinpoint_type) -> str:
+    '''
+    Generates a pinpoint. The function returns the pinpoint.
+    '''
+    if pinpoint_type == "none":
+        return ""
+    elif pinpoint_type == "page":
+        return f" at {pinpoint_number}"
+    elif pinpoint_type == "para":
+        return f" at para {pinpoint_number}"
 
 def enter_pinpoint() -> str:
     '''
@@ -152,32 +163,28 @@ def enter_pinpoint() -> str:
         return "Invalid pinpoint."
 
 
-def generate_citation(url, pinpoint: int | None = None) -> str:
+def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
     '''
     Generates a citation from the JSON file. This currently only works for
     cases that use neutral citations. Citations using printed reporters will
     be added in the near future.
     '''
-    # Calls the CanLII API
-    data = call_api_jurisprudence(url)
-    if data is None:
-        return "Invalid URL."
-
     # Creates a list of neutral citations from the McGill 9e Appendix B3
     # stored in data/mcgill/appendices.py
     neutral_citations = []
     for item in reporter_data.neutral_citations_ca:
         neutral_citations.append(item[2])
 
-    # Extracts the style of cause and removes all periods
-    style_of_cause = data["title"].replace(".", "")
+    
     # Verifies that the citation is neutral
-    parsed_citation = data["citation"].split(" ")
+    # Is this variable necessary?
+    parsed_citation = citation_data["citation"].split(" ")
+    # Extracts the style of cause and removes all periods
+    style_of_cause = citation_data["title"].replace(".", "")
 
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
-        neutral_citation_list = data["citation"].split()
+        neutral_citation_list = citation_data["citation"].split()
         neutral_citation = " ".join(neutral_citation_list[:3])
-        pinpoint = pinpoint or enter_pinpoint()
 
         # Adds the SCR printed citation whenever it's available
         # This accords with the official reporter hierarchy in McGill 9e 3.1
@@ -194,13 +201,11 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
         else:
             official_reporter_citation = None
         if official_reporter_citation:
-            citation = f"*{style_of_cause}*, {neutral_citation} at "\
-                f"para {pinpoint}, {official_reporter_citation}."
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
         else:
-            citation = f"*{style_of_cause}*, {neutral_citation} at para "\
-                    f"{pinpoint}."
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
 
-        return citation, official_reporter_citation
+        return citation
 
     else:
         return generate_parallel_citation(official_reporter_citation)
@@ -223,7 +228,6 @@ def generate_parallel_citation(scr_in_title: str) -> dict:
         parallel_reporters, parallel_citations, scr_in_title)
 
     return parallel_reporters
-
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

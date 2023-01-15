@@ -1,12 +1,5 @@
 from django import forms
 
-class MyForm(forms.Form):
-    CHOICES = (
-        ('option_1', 'Option 1'),
-        ('option_2', 'Option 2'),
-    )
-    radio_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-
 class PinpointType(forms.Form):
     '''
     Defines the form for the type of pinpoint, if any.
@@ -24,28 +17,10 @@ class PinpointType(forms.Form):
     as sections and articles (for legislation), numbers for journals, and 
     footnotes for all types of documents. See McGill 9e 1.5 for more details.
     '''
-    CHOICES = (
+    CHOICES = [
         ('paragraph', 'Paragraph'),
         ('page', 'Page'),
         ('none', 'None'),
-    )
-
-class CaseJurisdiction(forms.Form):
-    CHOICES = (
-        ('ca', 'Canada'),
-        ('bc', 'British Columbia'),
-        ('ab', 'Alberta'),
-        ('sk', 'Saskatchewan'),
-        ('mb', 'Manitoba'),
-        ('on', 'Ontario'),
-        ('qc', 'Quebec'),
-        ('nb', 'New Brunswick'),
-        ('ns', 'Nova Scotia'),
-        ('pe', 'Prince Edward Island'),
-        ('nl', 'Newfoundland and Labrador'),
-        ('nt', 'Northwest Territories'),
-        ('yt', 'Yukon'),
-        ('nu', 'Nunavut'),
-    )
+        ]
     
-    jurisdiction = forms.ChoiceField(choices=CHOICES)
+    choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=OPTIONS)
