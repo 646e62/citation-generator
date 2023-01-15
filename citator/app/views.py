@@ -29,6 +29,7 @@ def process_text(request):
             citation_data = Citation.objects.get(url=url)
             citation_data = Citation.objects.all()
             result = generate_citation(citation_data, pinpoint_result)
+            print("Database success")
             return render(request, 'app/result.html', {'result': result})
      
         # Call the API if it is not

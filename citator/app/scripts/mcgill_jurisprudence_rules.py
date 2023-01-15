@@ -17,7 +17,8 @@ def verify_neutral_citation(neutral_citation: str,
     citation is neutral, the function returns True. If not, it returns False.
     '''
     # Change to use the any() function
-    court_level = neutral_citation[1]
+    print(neutral_citation)
+    court_level = neutral_citation.split(" ")[1]
     for unclassified_citation in neutral_citation_list:
         if court_level in unclassified_citation:
             return True
@@ -177,12 +178,12 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
 
     
     print(citation_data)
-    parsed_citation = str(citation_data["citation"])
     
     # Extracts the style of cause and removes all periods
-    style_of_cause = citation_data["title"].replace(".", "")
-    print(style_of_cause)
-    
+    style_of_cause = citation_data["title"].replace(".", "") 
+    parsed_citation = citation_data["citation"]
+
+
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
         neutral_citation_list = parsed_citation.split(" ")
         neutral_citation = " ".join(neutral_citation_list[:3])
