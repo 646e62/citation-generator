@@ -176,14 +176,15 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
         neutral_citations.append(item[2])
 
     
-    # Verifies that the citation is neutral
-    # Is this variable necessary?
-    parsed_citation = citation_data["citation"].split(" ")
+    print(citation_data)
+    parsed_citation = str(citation_data["citation"])
+    
     # Extracts the style of cause and removes all periods
     style_of_cause = citation_data["title"].replace(".", "")
-
+    print(style_of_cause)
+    
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
-        neutral_citation_list = citation_data["citation"].split()
+        neutral_citation_list = parsed_citation.split(" ")
         neutral_citation = " ".join(neutral_citation_list[:3])
 
         # Adds the SCR printed citation whenever it's available
@@ -204,7 +205,7 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
             citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
         else:
             citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
-
+        print(citation)
         return citation
 
     else:

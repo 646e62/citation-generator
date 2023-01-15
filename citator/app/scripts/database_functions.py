@@ -1,3 +1,5 @@
+from ..models import Citation
+
 def save_citation(citation_data, url):
     '''
     Save the data from the API call to the Django database.
@@ -5,20 +7,21 @@ def save_citation(citation_data, url):
     
     # Create a new citation object.
     citation = Citation()
+    url_split = url.split("/")
 
     # Set the citation's attributes.
     citation.url = url
-    citation.short_url = citation_data['url']
-
-    citation.url = citation_data['citation_number']
-    citation.citation_date = citation_data['citation_date']
-    citation.citation_time = citation_data['citation_time']
-    citation.citation_location = citation_data['citation_location']
-    citation.citation_violation = citation_data['citation_violation']
-    citation.citation_amount = citation_data['citation_amount']
-    citation.citation_status = citation_data['citation_status']
-    citation.citation_officer = citation_data['citation_officer']
-    citation.citation_agency = citation_data['citation_agency']
+    citation.short_url = citation_data["url"]
+    citation.language = citation_data["language"]
+    citation.database_id = citation_data["databaseId"]
+    citation.case_jurisdiction = url_split[4]
+    citation.court = url_split[5]
+    citation.case_id = citation_data["caseId"]
+    citation.canlii_citation = citation_data["citation"]
+    citation.date = citation_data["decisionDate"]
+    citation.style_of_cause = citation_data["title"]
+    citation.docket_number = citation_data["docketNumber"]
+    citation.keywords = citation_data["keywords"].split(" — ")
 
     # Save the citation to the database.
     citation.save()
