@@ -3,7 +3,7 @@ from django.http import Http404
 from django.http import HttpResponse
 
 from .models import Changelog, Citation
-from .scripts.mcgill_jurisprudence_rules import generate_citation
+from .scripts.mcgill_jurisprudence_rules import generate_citation, generate_pinpoint
 from .scripts.api_calls import call_api_jurisprudence
 
 
@@ -20,8 +20,10 @@ def process_text(request):
     # Get the text
     if request.method == 'POST':
         url = request.POST['url']
-        pinpoint = request.POST['pinpoint']
-        
+        pinpoint_number = request.POST['pinpoint']
+        pinpoint_type = request.POST['pinpoint_type']
+        pinpoint_result = generate_pinpoint(pinpoint_number, pinpoint_type)
+
         # Check to see if the result is already in the database
         try:
             citation_data = Citation.objects.get(url=url)
@@ -37,8 +39,9 @@ def process_text(request):
             else:
                 # Save the citation data to the database
                 
-                result = generate_citation(citation_data, pinpoint)
+                result = generate_citation(citation_data, pinpoint_result)
                 return render(request, 'app/result.html', {'result': result})
+
     else:
         return render(request, 'app/index.html')
 

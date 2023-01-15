@@ -1,4 +1,4 @@
-def save_citation(citation_data):
+def save_citation(citation_data, url):
     '''
     Save the data from the API call to the Django database.
     '''
@@ -7,6 +7,9 @@ def save_citation(citation_data):
     citation = Citation()
 
     # Set the citation's attributes.
+    citation.url = url
+    citation.short_url = citation_data['url']
+
     citation.url = citation_data['citation_number']
     citation.citation_date = citation_data['citation_date']
     citation.citation_time = citation_data['citation_time']

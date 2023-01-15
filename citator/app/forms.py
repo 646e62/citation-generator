@@ -17,9 +17,10 @@ class PinpointType(forms.Form):
     as sections and articles (for legislation), numbers for journals, and 
     footnotes for all types of documents. See McGill 9e 1.5 for more details.
     '''
-    CHOICES = (
+    CHOICES = [
         ('paragraph', 'Paragraph'),
         ('page', 'Page'),
         ('none', 'None'),
-    )
-
+        ]
+    
+    choice_field = forms.ChoiceField(widget=forms.RadioSelect, choices=OPTIONS)

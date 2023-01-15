@@ -141,6 +141,16 @@ def check_preferred_reporters(parallel_reporters: list,
             "authoritative": authoritative_reporters,\
             "unofficial": unofficial_reporters}
 
+def generate_pinpoint(pinpoint_number, pinpoint_type) -> str:
+    '''
+    Generates a pinpoint. The function returns the pinpoint.
+    '''
+    if pinpoint_type == "none":
+        return ""
+    elif pinpoint_type == "page":
+        return f" at {pinpoint_number}"
+    elif pinpoint_type == "para":
+        return f" at para {pinpoint_number}"
 
 def enter_pinpoint() -> str:
     '''
@@ -153,7 +163,7 @@ def enter_pinpoint() -> str:
         return "Invalid pinpoint."
 
 
-def generate_citation(citation_data, pinpoint: int | None = None) -> str:
+def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
     '''
     Generates a citation from the JSON file. This currently only works for
     cases that use neutral citations. Citations using printed reporters will
@@ -175,7 +185,6 @@ def generate_citation(citation_data, pinpoint: int | None = None) -> str:
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
         neutral_citation_list = citation_data["citation"].split()
         neutral_citation = " ".join(neutral_citation_list[:3])
-        pinpoint = pinpoint or enter_pinpoint()
 
         # Adds the SCR printed citation whenever it's available
         # This accords with the official reporter hierarchy in McGill 9e 3.1
@@ -192,12 +201,9 @@ def generate_citation(citation_data, pinpoint: int | None = None) -> str:
         else:
             official_reporter_citation = None
         if official_reporter_citation:
-            citation = SafeString(f"<em>{style_of_cause}</em>, ", 
-                f"{neutral_citation} at ",
-                f"para {pinpoint}, {official_reporter_citation}.")
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
         else:
-            citation = SafeString(f"<em>{style_of_cause}</em>, " \
-                f"{neutral_citation} at para {pinpoint}.")
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
 
         return citation
 
