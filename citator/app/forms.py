@@ -1,12 +1,5 @@
 from django import forms
 
-class MyForm(forms.Form):
-    CHOICES = (
-        ('option_1', 'Option 1'),
-        ('option_2', 'Option 2'),
-    )
-    radio_field = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES)
-
 class PinpointType(forms.Form):
     '''
     Defines the form for the type of pinpoint, if any.
@@ -30,22 +23,3 @@ class PinpointType(forms.Form):
         ('none', 'None'),
     )
 
-class CaseJurisdiction(forms.Form):
-    CHOICES = (
-        ('ca', 'Canada'),
-        ('bc', 'British Columbia'),
-        ('ab', 'Alberta'),
-        ('sk', 'Saskatchewan'),
-        ('mb', 'Manitoba'),
-        ('on', 'Ontario'),
-        ('qc', 'Quebec'),
-        ('nb', 'New Brunswick'),
-        ('ns', 'Nova Scotia'),
-        ('pe', 'Prince Edward Island'),
-        ('nl', 'Newfoundland and Labrador'),
-        ('nt', 'Northwest Territories'),
-        ('yt', 'Yukon'),
-        ('nu', 'Nunavut'),
-    )
-    
-    jurisdiction = forms.ChoiceField(choices=CHOICES)

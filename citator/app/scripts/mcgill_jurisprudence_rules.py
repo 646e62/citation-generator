@@ -3,7 +3,6 @@ This module generates McGill 9e Jurisprudence citations.gener
 '''
 import sys
 
-from .api_calls import call_api_jurisprudence
 from .data.mcgill import reporter_data as reporter_data
 from .cache import serialize
 
@@ -153,17 +152,12 @@ def enter_pinpoint() -> str:
         return "Invalid pinpoint."
 
 
-def generate_citation(url, pinpoint: int | None = None) -> str:
+def generate_citation(citation_data, pinpoint: int | None = None) -> str:
     '''
     Generates a citation from the JSON file. This currently only works for
     cases that use neutral citations. Citations using printed reporters will
     be added in the near future.
     '''
-    # Calls the CanLII API
-    data = call_api_jurisprudence(url)
-    if data is None:
-        return "Invalid URL."
-
     # Creates a list of neutral citations from the McGill 9e Appendix B3
     # stored in data/mcgill/appendices.py
     neutral_citations = []
@@ -173,14 +167,12 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
     
     # Verifies that the citation is neutral
     # Is this variable necessary?
-    parsed_citation = data["citation"].split(" ")
- 
+    parsed_citation = citation_data["citation"].split(" ")
     # Extracts the style of cause and removes all periods
-    style_of_cause = data["title"].replace(".", "")
-
+    style_of_cause = citation_data["title"].replace(".", "")
 
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
-        neutral_citation_list = data["citation"].split()
+        neutral_citation_list = citation_data["citation"].split()
         neutral_citation = " ".join(neutral_citation_list[:3])
         pinpoint = pinpoint or enter_pinpoint()
 
@@ -204,8 +196,7 @@ def generate_citation(url, pinpoint: int | None = None) -> str:
         else:
             citation = f"*{style_of_cause}*, {neutral_citation} at para "\
                     f"{pinpoint}."
-        
-        serialize(url, data)
+
         return citation
 
     else:
@@ -229,7 +220,6 @@ def generate_parallel_citation(scr_in_title: str) -> dict:
         parallel_reporters, parallel_citations, scr_in_title)
 
     return parallel_reporters
-
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
