@@ -42,15 +42,7 @@ def get_database_id(database_id: str) -> str:
         if database_id in database[1]:
             return database[0]
     return database_id
-'''
-    for database_id_pair in hyphenated_database_ids:
-        if database_id == database_id_pair[1][0] or database_id == \
-            database_id_pair[1][1]:
-            print("small success", database_id_pair[0])
-            return database_id_pair[0]
-        print("smaller success", database_id_pair[0])
-        return database_id
-'''
+
 
 def get_api_key() -> str:
     '''
@@ -86,7 +78,6 @@ def case_info(url: str) -> str:
         return None
     case_id: str = url[-2]
     database_id: str = get_database_id(url[-5])
-    print(database_id)
     language: str = url[-7]
 
     # Rudimentary error checking
@@ -107,8 +98,6 @@ def call_api_jurisprudence(url: str) -> str:
     '''
     api_key: str = get_api_key()
     api_elements = case_info(url)
-    print(api_key)
-    print(api_elements)
     if api_elements is None:
         return None
     language, database_id, case_id = api_elements
@@ -116,7 +105,6 @@ def call_api_jurisprudence(url: str) -> str:
     # CanLII API URL call structure
     url: str = f"https://api.canlii.org/v1/caseBrowse/{language}/"\
         f"{database_id}/{case_id}/?api_key={api_key}"
-    print(url)
     response = requests.get(url, timeout=50)
     # Converts the JSON file to a Python dictionary
     data = response.json()

@@ -6,19 +6,19 @@ from django.utils import timezone
 class Citation(models.Model):
     
     JURISDICTION_CHOICES = (
-        ('CA', 'Canada'),
-        ('BC', 'British Columbia'),
-        ('AB', 'Alberta'),
-        ('SK', 'Saskatchewan'),
-        ('MB', 'Manitoba'),
-        ('ON', 'Ontario'),
-        ('QC', 'Quebec'),
-        ('NB', 'New Brunswick'),
-        ('NS', 'Nova Scotia'),
-        ('PE', 'Prince Edward Island'),
-        ('NL', 'Newfoundland and Labrador'),
-        ('NT', 'Northwest Territories'),
-        ('NU', 'Nunavut'),
+        ('ca', 'Canada'),
+        ('bc', 'British Columbia'),
+        ('ab', 'Alberta'),
+        ('sk', 'Saskatchewan'),
+        ('mb', 'Manitoba'),
+        ('on', 'Ontario'),
+        ('qc', 'Quebec'),
+        ('nb', 'New Brunswick'),
+        ('ns', 'Nova Scotia'),
+        ('pe', 'Prince Edward Island'),
+        ('nl', 'Newfoundland and Labrador'),
+        ('nt', 'Northwest Territories'),
+        ('nu', 'Nunavut'),
         )
     url = models.URLField(max_length=200)
     short_url = models.URLField(max_length=200)

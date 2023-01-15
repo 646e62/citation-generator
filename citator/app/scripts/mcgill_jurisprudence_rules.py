@@ -3,6 +3,7 @@ This module generates McGill 9e Jurisprudence citations.gener
 '''
 import sys
 
+from django.utils.safestring import SafeString
 from .data.mcgill import reporter_data as reporter_data
 from .cache import serialize
 
@@ -191,11 +192,12 @@ def generate_citation(citation_data, pinpoint: int | None = None) -> str:
         else:
             official_reporter_citation = None
         if official_reporter_citation:
-            citation = f"*{style_of_cause}*, {neutral_citation} at "\
-                f"para {pinpoint}, {official_reporter_citation}."
+            citation = SafeString(f"<em>{style_of_cause}</em>, ", 
+                f"{neutral_citation} at ",
+                f"para {pinpoint}, {official_reporter_citation}.")
         else:
-            citation = f"*{style_of_cause}*, {neutral_citation} at para "\
-                    f"{pinpoint}."
+            citation = SafeString(f"<em>{style_of_cause}</em>, " \
+                f"{neutral_citation} at para {pinpoint}.")
 
         return citation
 
