@@ -1,6 +1,6 @@
 from ..models import Citation
 
-def save_citation(citation_data, url):
+def save_citation(citation_data, url, result):
     '''
     Save the data from the API call to the Django database.
     '''
@@ -17,11 +17,12 @@ def save_citation(citation_data, url):
     citation.case_jurisdiction = url_split[4]
     citation.court = url_split[5]
     citation.case_id = citation_data["caseId"]
-    citation.canlii_citation = citation_data["citation"]
+    citation.citation = citation_data["citation"]
     citation.date = citation_data["decisionDate"]
-    citation.style_of_cause = citation_data["title"]
+    citation.title = citation_data["title"]
     citation.docket_number = citation_data["docketNumber"]
     citation.keywords = citation_data["keywords"].split(" — ")
+    citation.mcgill_citation = result
 
     # Save the citation to the database.
     citation.save()

@@ -203,11 +203,13 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
         else:
             official_reporter_citation = None
         if official_reporter_citation:
-            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}, {official_reporter_citation}")
+            pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
         else:
-            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}")
+            pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
         print(citation)
-        return citation
+        return citation, pinpoint_citation
 
     else:
         return generate_parallel_citation(official_reporter_citation)
