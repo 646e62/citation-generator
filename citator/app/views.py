@@ -29,15 +29,11 @@ def process_text(request):
         try:
             citation_model = Citation.objects.get(url=url)
             citation_data = model_to_dict(citation_model)
-            print(citation_data)
-            #citation_data = Citation.objects.all()
             result = generate_citation(citation_data, pinpoint_result)
-            print("Database success")
             return render(request, 'app/result.html', {'result': result[1]})
      
         # Call the API if it is not
         except Citation.DoesNotExist:
-            print("Not found in database")
             citation_data = call_api_jurisprudence(url)
             if citation_data is None:
                 return render(request, 'app/error.html')

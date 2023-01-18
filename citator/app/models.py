@@ -30,7 +30,6 @@ class Citation(models.Model):
         )
     court = models.CharField(max_length=10)
     case_id = models.CharField(max_length=200)
-    #canlii_citation = models.CharField(max_length=200)
     citation = models.CharField(max_length=200)
     date = models.DateField()
     title = models.CharField(max_length=200)

@@ -185,7 +185,7 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
 
 
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
-        neutral_citation_list = parsed_citation.split(" ")
+        neutral_citation_list = parsed_citation.split()
         neutral_citation = " ".join(neutral_citation_list[:3])
 
         # Adds the SCR printed citation whenever it's available
