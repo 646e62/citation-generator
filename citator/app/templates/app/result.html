@@ -1,21 +1,13 @@
-{% load static %}
+{% extends 'app/base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %}</title>
-</head>
-
-<body>
-
+{% block content %}
 	<div class="title">
     		<h1>Citator</h1>
 	</div>
 	
-	<p>{{ result }} {{ pinpoint_result }}</p>
-
-</body>
-
-</html>
+	<div class="content">
+		<p>{{ result }} {{ pinpoint_result }}</p>
+		<a href="/">Home</a>
+	</div>
+{% endblock %}
 
