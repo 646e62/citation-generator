@@ -1,10 +1,10 @@
 '''
-This module generates McGill 9e Jurisprudence citations.gener
+This module generates McGill 9e Jurisprudence citations.
 '''
 import sys
 
 from django.utils.safestring import SafeString
-from .data.mcgill import reporter_data as reporter_data
+from .data.mcgill import reporter_data
 from .cache import serialize
 
 # Functions for the McGill 9e Jurisprudence class
@@ -48,7 +48,7 @@ def isolate_parallel_citations(other_citations: str) -> tuple[str, str]:
     etc.). This will be added in the near future.
     '''
 
-    # Creates (likely incomplete sets of citation and reporter elements to
+    # Creates (likely incomplete) sets of citation and reporter elements to
     # exclude
     excluded_citations = ("(QL)")
     excluded_reporters = ("No")
@@ -65,7 +65,7 @@ def isolate_parallel_citations(other_citations: str) -> tuple[str, str]:
     # Parses the list of parallel citations
     for case in citation_list:
         # Splits the citation into a list
-        citation_split = case.split(" ")
+        citation_split = case.split()
 
         # Light formatting
         for item in citation_split:
@@ -221,6 +221,17 @@ def generate_parallel_citation(scr_in_title: str) -> dict:
     '''
     Produces a list of parallel citations from a string when called.
     '''
+
+    # Check the parallel citation textbox to see if the user has entered
+    # anything into it.
+
+    # If the user has entered something into the textbox, the function
+    # will parse the string and return a list of parallel citations.
+    # If the user hasn't entered anything into it, the function returns the
+    # default CanLII citation.
+
+
+
     parallel_citation_string = input("Enter the unofficial reporters"\
             "by copying them directly from a CanLII case or separating"\
             "them with commas: ")
