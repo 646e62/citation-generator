@@ -50,6 +50,7 @@ neutral_citations_ca = [
     ["Nova Scotia", "Provincial Court", "NSPC", "2001-03", "en"],
     ["Nunavut", "Nunavut Court of Justice", "NUCJ", "2001-01", "en"],
     ["Nunavut", "Court of Appeal for Nunavut", "NUCA", "2006-05", "en"],
+    ["Nunavut", "Information and Privacy Commissioner", "NUIPC", "2005-01", "en"],
     ["Ontario", "Court of Appeal", "ONCA", "2007-07", "en"],
     ["Ontario", "Superior Court of Justice", "ONSC", "2010-01", "en"],
     ["Ontario", "Ontario Court of Justice", "ONCJ", "2004-01", "en"],
