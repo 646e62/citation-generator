@@ -13,14 +13,14 @@ def save_citation(citation_data, url, result):
     citation.url = url
     citation.short_url = citation_data["url"]
     citation.language = citation_data["language"]
-    citation.database_id = citation_data["databaseId"]
+    citation.databaseId = citation_data["databaseId"]
     citation.case_jurisdiction = url_split[4]
     citation.court = url_split[5]
-    citation.case_id = citation_data["caseId"]
+    citation.caseId = citation_data["caseId"]
     citation.citation = citation_data["citation"]
-    citation.date = citation_data["decisionDate"]
+    citation.decisionDate = citation_data["decisionDate"]
     citation.title = citation_data["title"]
-    citation.docket_number = citation_data["docketNumber"]
+    citation.docketNumber = citation_data["docketNumber"]
     citation.keywords = citation_data["keywords"].split(" — ")
     citation.mcgill_citation = result
 

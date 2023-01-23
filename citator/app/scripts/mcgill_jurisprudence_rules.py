@@ -146,10 +146,12 @@ def verify_year(citation: str, citation_data: dict) -> str:
     '''
 
     # Creates a list of citation elements
+    print(citation_data["decisionDate"])
     citation_list = citation.split()
     decision_year = citation_data["decisionDate"].split("-")[0]
     style_of_cause = citation_data["title"].replace(".", "") 
     reporter_year = None
+    print(decision_year)
 
     # Check to see if the first element of the citation is a year. Note that 
     # many citations are enclosed in square brackets that will need to be 
@@ -159,11 +161,14 @@ def verify_year(citation: str, citation_data: dict) -> str:
     check_brackets = re.search(r"\[\d{4}\]", citation_list[0])
     check_year = re.search(r"\b\d{4}\b", citation_list[0])
 
-    if check_brackets:
-        reporter_year = "".join(char for char in citation_list[0] if char.isdigit())
     if check_year:
         reporter_year = citation_list[0]
-
+        print(reporter_year)
+    if check_brackets:
+        reporter_year = "".join(char for char in citation_list[0] if char.isdigit())
+        print(reporter_year)
+    
+        
     if reporter_year == decision_year:
         citation_year_corresponds = True
     else:
@@ -172,8 +177,10 @@ def verify_year(citation: str, citation_data: dict) -> str:
     # When a decision has a neutral citation or when the decision year is the
     # same as the year in the main citation, the year isn't added to the style
     # of cause and the citation remains the same.
-        
+    print(decision_year, reporter_year, citation_year_corresponds)
     if citation_year_corresponds:
+        print(citation, style_of_cause, citation_year_corresponds)
+        citation = f"<em>{style_of_cause}</em>"
         return citation, style_of_cause
 
     # When the main citation doesn't contain a year, or if the main citation's
@@ -181,7 +188,8 @@ def verify_year(citation: str, citation_data: dict) -> str:
     # in parentheses after the style of cause.
 
     elif not reporter_year or reporter_year != decision_year:
-        citation = f"{style_of_cause} ({decision_year})"
+        citation = f"<em>{style_of_cause}</em> ({decision_year})"
+        print(citation, style_of_cause, citation_year_corresponds)
         return citation, style_of_cause
     
 
@@ -239,7 +247,7 @@ def sort_citations(citation_data: dict, user_citations: str) -> dict:
 
         citations = citation_list[1]
         reporters = citation_list[0]
-        
+
         for citation in citations:
             citation_index = citations.index(citation)
             if citation in official_reporters_list:
@@ -309,37 +317,37 @@ def generate_citation(citation_data: dict, sorted_citations: dict,
 
     elif sorted_citations["official"]:
         official_reporter_citation = sorted_citations.get("official")[0]
-        style_of_cause = verify_year(official_reporter_citation, citation_data)[1]
+        style_of_cause = verify_year(official_reporter_citation, citation_data)[0]
         
-        citation = SafeString(f"<em>{style_of_cause}</em>, {official_reporter_citation}")
-        pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {official_reporter_citation}{pinpoint_result}.")
+        citation = SafeString(f"{style_of_cause}, {official_reporter_citation}")
+        pinpoint_citation = SafeString(f"{style_of_cause}, {official_reporter_citation}{pinpoint_result}.")
 
         return citation, pinpoint_citation
 
     elif sorted_citations["preferred"]:
         preferred_reporter_citation = sorted_citations.get("preferred")[0]
-        style_of_cause = verify_year(preferred_reporter_citation, citation_data)[1]
+        style_of_cause = verify_year(preferred_reporter_citation, citation_data)[0]
 
-        citation = SafeString(f"<em>{style_of_cause}</em>, {preferred_reporter_citation}")
-        pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {preferred_reporter_citation}{pinpoint_result}.")
+        citation = SafeString(f"{style_of_cause}, {preferred_reporter_citation}")
+        pinpoint_citation = SafeString(f"{style_of_cause}, {preferred_reporter_citation}{pinpoint_result}.")
 
         return citation, pinpoint_citation
     
     elif sorted_citations["authoritative"]:
         authoritative_reporter_citation = sorted_citations.get("authoritative")[0]
-        style_of_cause = verify_year(authoritative_reporter_citation, citation_data)[1]
+        style_of_cause = verify_year(authoritative_reporter_citation, citation_data)[0]
 
-        citation = SafeString(f"<em>{style_of_cause}</em>, {authoritative_reporter_citation}")
-        pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {authoritative_reporter_citation}{pinpoint_result}.")
+        citation = SafeString(f"{style_of_cause}, {authoritative_reporter_citation}")
+        pinpoint_citation = SafeString(f"{style_of_cause}, {authoritative_reporter_citation}{pinpoint_result}.")
 
         return citation, pinpoint_citation
 
     else:
         unofficial_reporter_citation = sorted_citations.get("unofficial")[0]
-        style_of_cause = verify_year(unofficial_reporter_citation, citation_data)[1]
+        style_of_cause = verify_year(unofficial_reporter_citation, citation_data)[0]
 
-        citation = SafeString(f"<em>{style_of_cause}</em>, {unofficial_reporter_citation}")
-        pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {unofficial_reporter_citation}{pinpoint_result}.")
+        citation = SafeString(f"{style_of_cause}, {unofficial_reporter_citation}")
+        pinpoint_citation = SafeString(f"{style_of_cause}, {unofficial_reporter_citation}{pinpoint_result}.")
 
         return citation, pinpoint_citation
 

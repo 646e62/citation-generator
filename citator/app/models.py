@@ -23,7 +23,7 @@ class Citation(models.Model):
     url = models.URLField(max_length=200)
     short_url = models.URLField(max_length=200)
     language = models.CharField(max_length=2)
-    database_id = models.CharField(max_length=200)
+    databaseId = models.CharField(max_length=200)
     case_jurisdiction = models.CharField(
         max_length=2, 
         choices=JURISDICTION_CHOICES
