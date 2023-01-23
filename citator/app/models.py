@@ -29,11 +29,11 @@ class Citation(models.Model):
         choices=JURISDICTION_CHOICES
         )
     court = models.CharField(max_length=10)
-    case_id = models.CharField(max_length=200)
+    caseId = models.CharField(max_length=200)
     citation = models.CharField(max_length=200)
-    date = models.DateField()
-    title = models.CharField(max_length=200)
-    docket_number = models.CharField(max_length=200)
+    decisionDate = models.CharField(max_length=20)
+    title = models.CharField(max_length=500)
+    docketNumber = models.CharField(max_length=200)
     keywords = models.CharField(max_length=200)
     mcgill_citation = models.CharField(max_length=200)
 

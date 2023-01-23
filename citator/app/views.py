@@ -31,7 +31,6 @@ def process_text(request):
             citation_model = Citation.objects.get(url=url)
             citation_data = model_to_dict(citation_model)
             sorted_citations = sort_citations(citation_data, parallel_citations)
-            print(sorted_citations)
             result = generate_citation(citation_data, sorted_citations, pinpoint_result)
             return render(request, 'app/result.html', {'result': result[1], 'sorted_citations': sorted_citations})
      
@@ -45,7 +44,7 @@ def process_text(request):
                 sorted_citations = sort_citations(citation_data, parallel_citations)
                 result = generate_citation(citation_data, sorted_citations, pinpoint_result)
                 citation = save_citation(citation_data, url, result[0])
-                return render(request, 'app/result.html', {'result': result[1]})
+                return render(request, 'app/result.html', {'result': result[1], 'sorted_citations': sorted_citations})
 
     else:
         return render(request, 'app/index.html')

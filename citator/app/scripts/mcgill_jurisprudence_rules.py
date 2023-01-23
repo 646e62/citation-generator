@@ -55,8 +55,8 @@ def process_parallel_citations(other_citations: str) -> tuple[str, str]:
 
     # Creates (likely incomplete) sets of citation and reporter elements to
     # exclude
-    excluded_citations = ("(QL)")
-    excluded_reporters = ("No", "no")
+    excluded_citation_items = ("(QL)")
+    excluded_reporter_items = ("No", "no")
 
     # Creates a list of parallel citations if the user copied the citations
     # from CanLII. Assumes that the citations are separated by a long dash
@@ -78,24 +78,25 @@ def process_parallel_citations(other_citations: str) -> tuple[str, str]:
     # Some reporters have names that are separated by a space (eg "Sask R")
     # This function will need to be updated to handle these cases
 
-    for case in citation_list:
+    for citation in citation_list:
         # Splits the citation into a list
         # Splits either by space or by dash
-        #print(case)
         delimiters = " |-"
-        citation_split = re.split(delimiters, case)
-
+        citation_split = re.split(delimiters, citation)
+        citation_joined = []
         # Light formatting
         for item in citation_split:
+
             # Remove items that are in the exclude list
-            if item in excluded_citations:
+            if item in excluded_citation_items:
                 citation_split.remove(item)
-                case = " ".join(citation_split)
+                continue
+
             # Adds the parallel reporter
-            if item.isalpha() and item not in excluded_reporters:
+            if any(character.isalpha() for character in item) and item not in excluded_reporter_items:
                 # Remove the periods from the reporter
                 item = item.replace(".", "")
-                parallel_reporter_list.append(item)
+                citation_joined.append(item)
 
             # Remove brackets around a number if the next item is a string containing "Carswell"
             # See McGill 9e 3.8.3
@@ -103,16 +104,15 @@ def process_parallel_citations(other_citations: str) -> tuple[str, str]:
                 item.endswith("]") and \
                 citation_split[citation_split.index(item) + 1].startswith("Carswell"):
                 citation_split[citation_split.index(item)] = item[1:-1]
-                case = " ".join(citation_split)
-
-        # Join the parallel_reporter_list back into a string
-        # This is necessary because the list is used to create a set
-
-        parallel_reporter_list = " ".join(parallel_reporter_list)
-        print(parallel_reporter_list)        
-        citation_list_parsed.append(case)
-
-    return parallel_reporter_list
+                
+            citation = " ".join(citation_split)
+        
+        item = " ".join(citation_joined)
+        parallel_reporter_list.append(item)
+        citation_list_parsed.append(citation)
+        
+    print(citation_list_parsed, parallel_reporter_list)
+    return citation_list_parsed, parallel_reporter_list
 
 
 # Adds/removes years, jurisdictions, and court levels to/from citations
@@ -147,10 +147,7 @@ def verify_year(citation: str, citation_data: dict) -> str:
 
     # Creates a list of citation elements
     citation_list = citation.split()
-    if citation_data["decisionDate"]:
-        decision_year = citation_data["decisionDate"].split("-")[0]
-    else:
-        decision_year = citation_data["date"][0]
+    decision_year = citation_data["decisionDate"].split("-")[0]
     style_of_cause = citation_data["title"].replace(".", "") 
     reporter_year = None
 
@@ -239,26 +236,21 @@ def sort_citations(citation_data: dict, user_citations: str) -> dict:
                 "authoritative": authoritative_reporters,\
                 "unofficial": unofficial_reporters}
     else:
-        reporters = citation_list[1]
-        citations = citation_list[0]
-        for citation in citation_list[1]:
-            # Check to see if the reporter appears in a given list of reporters
-            # If it does, the citation is added to the appropriate list
-            #print(reporter_data.official_reporters)
+
+        citations = citation_list[1]
+        reporters = citation_list[0]
+        
+        for citation in citations:
+            citation_index = citations.index(citation)
             if citation in official_reporters_list:
-                citation_index = citation_list[1].index(citation)
-                official_reporters.append(citation_list[0][citation_index])
+                official_reporters.append(reporters[citation_index])
             elif citation in preferred_reporters_list:
-                citation_index = citation_list[1].index(citation)
-                preferred_reporters.append(citation_list[0][citation_index])
+                preferred_reporters.append(reporters[citation_index])
             elif citation in authoritative_reporters_list:
-                citation_index = citation_list[1].index(citation)
-                authoritative_reporters.append(citation_list[0][citation_index])
+                authoritative_reporters.append(reporters[citation_index])
             else:
-                citation_index = citation_list[1].index(citation)
-                unofficial_reporters.append(citation_list[0][citation_index])
-    #for citation in citation_list:
-        #print(citation)
+                unofficial_reporters.append(reporters[citation_index])
+
     
     return {"neutral": neutral_citations,\
         "official": official_reporters,\
@@ -317,7 +309,7 @@ def generate_citation(citation_data: dict, sorted_citations: dict,
 
     elif sorted_citations["official"]:
         official_reporter_citation = sorted_citations.get("official")[0]
-        style_of_cause = verify_year(official_reporter_citation, citation_data)
+        style_of_cause = verify_year(official_reporter_citation, citation_data)[1]
         
         citation = SafeString(f"<em>{style_of_cause}</em>, {official_reporter_citation}")
         pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {official_reporter_citation}{pinpoint_result}.")
@@ -326,7 +318,7 @@ def generate_citation(citation_data: dict, sorted_citations: dict,
 
     elif sorted_citations["preferred"]:
         preferred_reporter_citation = sorted_citations.get("preferred")[0]
-        style_of_cause = verify_year(preferred_reporter_citation, citation_data)
+        style_of_cause = verify_year(preferred_reporter_citation, citation_data)[1]
 
         citation = SafeString(f"<em>{style_of_cause}</em>, {preferred_reporter_citation}")
         pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {preferred_reporter_citation}{pinpoint_result}.")
@@ -335,7 +327,7 @@ def generate_citation(citation_data: dict, sorted_citations: dict,
     
     elif sorted_citations["authoritative"]:
         authoritative_reporter_citation = sorted_citations.get("authoritative")[0]
-        style_of_cause = verify_year(authoritative_reporter_citation, citation_data)
+        style_of_cause = verify_year(authoritative_reporter_citation, citation_data)[1]
 
         citation = SafeString(f"<em>{style_of_cause}</em>, {authoritative_reporter_citation}")
         pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {authoritative_reporter_citation}{pinpoint_result}.")
@@ -344,7 +336,7 @@ def generate_citation(citation_data: dict, sorted_citations: dict,
 
     else:
         unofficial_reporter_citation = sorted_citations.get("unofficial")[0]
-        style_of_cause = verify_year(unofficial_reporter_citation, citation_data)
+        style_of_cause = verify_year(unofficial_reporter_citation, citation_data)[1]
 
         citation = SafeString(f"<em>{style_of_cause}</em>, {unofficial_reporter_citation}")
         pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {unofficial_reporter_citation}{pinpoint_result}.")
