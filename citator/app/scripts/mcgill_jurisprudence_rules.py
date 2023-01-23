@@ -110,12 +110,11 @@ def process_parallel_citations(other_citations: str) -> tuple[str, str]:
         item = " ".join(citation_joined)
         parallel_reporter_list.append(item)
         citation_list_parsed.append(citation)
-        
-    print(citation_list_parsed, parallel_reporter_list)
+
     return citation_list_parsed, parallel_reporter_list
 
 
-# Adds/removes years, jurisdictions, and court levels to/from citations
+# Handles years for non-neutral citations
 
 def verify_year(citation: str, citation_data: dict) -> str:
     '''
@@ -146,12 +145,10 @@ def verify_year(citation: str, citation_data: dict) -> str:
     '''
 
     # Creates a list of citation elements
-    print(citation_data["decisionDate"])
     citation_list = citation.split()
     decision_year = citation_data["decisionDate"].split("-")[0]
     style_of_cause = citation_data["title"].replace(".", "") 
     reporter_year = None
-    print(decision_year)
 
     # Check to see if the first element of the citation is a year. Note that 
     # many citations are enclosed in square brackets that will need to be 
@@ -163,11 +160,9 @@ def verify_year(citation: str, citation_data: dict) -> str:
 
     if check_year:
         reporter_year = citation_list[0]
-        print(reporter_year)
+
     if check_brackets:
         reporter_year = "".join(char for char in citation_list[0] if char.isdigit())
-        print(reporter_year)
-    
         
     if reporter_year == decision_year:
         citation_year_corresponds = True
@@ -177,9 +172,7 @@ def verify_year(citation: str, citation_data: dict) -> str:
     # When a decision has a neutral citation or when the decision year is the
     # same as the year in the main citation, the year isn't added to the style
     # of cause and the citation remains the same.
-    print(decision_year, reporter_year, citation_year_corresponds)
     if citation_year_corresponds:
-        print(citation, style_of_cause, citation_year_corresponds)
         citation = f"<em>{style_of_cause}</em>"
         return citation, style_of_cause
 
@@ -189,9 +182,77 @@ def verify_year(citation: str, citation_data: dict) -> str:
 
     elif not reporter_year or reporter_year != decision_year:
         citation = f"<em>{style_of_cause}</em> ({decision_year})"
-        print(citation, style_of_cause, citation_year_corresponds)
         return citation, style_of_cause
-    
+
+# Handles court and jurisdiction for non-neutral citations
+
+def verify_court(citation: str, citation_data: dict) -> str:
+
+    '''
+    This function adds the court and jurisdiction to the citation if necessary.
+    '''
+
+    # Creates a list of citation elements
+    citation_list = citation.split()
+    court_jurisdiction_list = []
+
+    # CanLII abbreviation | en | fr | full name
+    jurisdiction_list = [
+        ("BC", "BC", "BC", "British Columbia"),
+        ("AB", "Alta", "Alta", "Alberta"),
+        ("SK", "Sask", "Sask", "Saskatchewan"),
+        ("MB", "Man", "Man", "Manitoba"),
+        ("ON", "Ont", "Ont", "Ontario"),
+        ("QC", "Qc", "Qc", "Quebec"),
+        ("NB", "NB", "N-B", "New Brunswick"),
+        ("NS", "NS", "NS", "Nova Scotia"),
+        ("PE", "PEI", "PEI", "Prince Edward Island"),
+        ("NL", "NL", "Nfld", "Newfoundland and Labrador"),
+        ("YT", "Y", "Y", "Yukon"),
+        ("NT", "NWT", "TN-O", "Northwest Territories"),
+        ("NU", "Nunavut", "Nvt", "Nunavut"),
+    ]
+    implicit_court_jurisidiction_list = [
+        ("AAS", "QCSAT"),
+        ("ACF", "FCC"),
+    ]
+
+    # Replaces the CanLII jurisdiction/court identifiers with the McGill 9e-
+    # compliant jurisdiction/court identifiers.
+
+    if "CanLII" in citation_list:
+        for item in citation_list:
+            if "(" in item or ")" in item:
+                item = ''.join(filter(str.isalnum, item))
+                court_jurisdiction_list.append(item)
+
+        # No formatting needed if there is only one jurisdiction identifier
+        if len(court_jurisdiction_list) == 1:
+            return f"({court_jurisdiction_list[0]})"
+        
+        # Replaces the jurisdiction identifier with the McGill compliant
+        # shortened version. This code should be placed into a separate 
+        # function at some point, as it is likely to be repeated again.
+
+        else:
+            for tuple_item in jurisdiction_list:
+                for item in tuple_item:
+                    if court_jurisdiction_list[0] == tuple_item[0] and \
+                        citation_data["language"] == "en":
+                        return f"({tuple_item[1]} {court_jurisdiction_list[1]})"
+                    elif court_jurisdiction_list[0] == tuple_item[0] and \
+                        citation_data["language"] == "fr":
+                        return f"({tuple_item[2]} {court_jurisdiction_list[1]})"
+        
+    # If the citation is not from CanLII, the citation will need to be checked 
+    # to see if it identifies the court and jurisdiction. If it does, the
+    # citation will be returned as is. If it doesn't, the court and jurisdiction
+    # will be added to the citation. Whether the citation implies the court and
+    # jurisdiction can be determined by seeing if the citation reporter exists
+    # in the implicit_court_jurisdiction_list.
+
+    # Some of the logic used in the sorting function could be used here to
+    # sort through and combine the reporters.
 
 
 # Sorts parallel citations into one of five categories: neutral, official,
@@ -269,7 +330,7 @@ def sort_citations(citation_data: dict, user_citations: str) -> dict:
 
 # Pinpoint handlers
 
-def generate_pinpoint(pinpoint_number, pinpoint_type) -> str:
+def generate_pinpoint(pinpoint_number: str, pinpoint_type: str) -> str:
     '''
     Generates a pinpoint. The function returns the pinpoint.
     '''
