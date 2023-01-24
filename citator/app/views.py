@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.forms.models import model_to_dict
 from django.http import Http404
 from django.http import HttpResponse
+from django.contrib import messages
 
 from .models import Changelog, Citation
 from .scripts.mcgill_jurisprudence_rules import generate_citation, generate_pinpoint, sort_citations
@@ -33,12 +34,13 @@ def process_text(request):
             sorted_citations = sort_citations(citation_data, parallel_citations)
             result = generate_citation(citation_data, sorted_citations, pinpoint_result)
             return render(request, 'app/result.html', {'result': result[1], 'sorted_citations': sorted_citations})
-     
+
         # Call the API if it is not
         except Citation.DoesNotExist:
             citation_data = call_api_jurisprudence(url)
             if citation_data is None:
-                return render(request, 'app/')
+                messages.error(request, "Cannot get citation data")
+                return render(request, 'app/index.html')
             else:
                 # Save the citation data to the database
                 sorted_citations = sort_citations(citation_data, parallel_citations)
