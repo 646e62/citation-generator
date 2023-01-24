@@ -26,7 +26,7 @@
 		<label for="url">Enter a CanLII URL:</label>
 		<form action="{% url 'process_text' %}" method="post">
 			{% csrf_token %}
-     			<input type="text" name="url" id="url">
+     			<input type="text" name="url" id="url" size="100">	
 			<p>
 	        	<label for="radio">Choose a pinpoint type:</label>
 			<p>
@@ -36,6 +36,10 @@
 			<p>
 			<label for="pinpoint">Pinpoint #:</label>
 			<input type="number" min="1" id="pinpoint" name="pinpoint" value="1">	
+			<p>
+			<label for="parallel_citations">Parallel Citations:</label>
+			<p>
+			<input type="text" name="parallel_citations" size="100">
 			<p>
 			<input type="submit" value="Submit">
 		</form>

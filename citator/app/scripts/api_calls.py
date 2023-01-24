@@ -34,9 +34,9 @@ def get_database_id(database_id: str) -> str:
         ["exchc-cech", ["exchc", "cech"]],
         ]
     
-# Run through the hyphenated databaseIDs and check to see whether the 
-# database_id component matches either of the second elements in the list. If
-# so, return the first element in the list as the database_id
+    # Run through the hyphenated databaseIDs and check to see whether the 
+    # database_id component matches either of the second elements in the list. 
+    # If so, return the first element in the list as the database_id
 
     for database in hyphenated_database_ids:
         if database_id in database[1]:

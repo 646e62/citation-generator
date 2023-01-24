@@ -17,7 +17,8 @@ def verify_neutral_citation(neutral_citation: str,
     citation is neutral, the function returns True. If not, it returns False.
     '''
     # Change to use the any() function
-    court_level = neutral_citation[1]
+    print(neutral_citation)
+    court_level = neutral_citation.split(" ")[1]
     for unclassified_citation in neutral_citation_list:
         if court_level in unclassified_citation:
             return True
@@ -176,14 +177,15 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
         neutral_citations.append(item[2])
 
     
-    # Verifies that the citation is neutral
-    # Is this variable necessary?
-    parsed_citation = citation_data["citation"].split(" ")
+    print(citation_data)
+    
     # Extracts the style of cause and removes all periods
-    style_of_cause = citation_data["title"].replace(".", "")
+    style_of_cause = citation_data["title"].replace(".", "") 
+    parsed_citation = citation_data["citation"]
+
 
     if verify_neutral_citation(parsed_citation, neutral_citations) is True:
-        neutral_citation_list = citation_data["citation"].split()
+        neutral_citation_list = parsed_citation.split()
         neutral_citation = " ".join(neutral_citation_list[:3])
 
         # Adds the SCR printed citation whenever it's available
@@ -201,11 +203,13 @@ def generate_citation(citation_data, pinpoint_result: int | None = None) -> str:
         else:
             official_reporter_citation = None
         if official_reporter_citation:
-            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}, {official_reporter_citation}")
+            pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}, {official_reporter_citation}.")
         else:
-            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
-
-        return citation
+            citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}")
+            pinpoint_citation = SafeString(f"<em>{style_of_cause}</em>, {neutral_citation}{pinpoint_result}.")
+        print(citation)
+        return citation, pinpoint_citation
 
     else:
         return generate_parallel_citation(official_reporter_citation)
