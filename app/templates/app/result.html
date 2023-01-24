@@ -1,21 +1,34 @@
-{% load static %}
+{% extends 'app/base.html' %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %}</title>
-</head>
-
-<body>
-
+{% block content %}
 	<div class="title">
     		<h1>Citator</h1>
+			<a href="/">Home</a>
+			<a href="/changelog">Change Log</a>
 	</div>
+
+	<br>
 	
-	<p>{{ result }} {{ pinpoint_result }}</p>
+	<div class="content">
+		<h2>Citation</h2>
+		<p>{{ result }} {{ pinpoint_result }}</p>
+		
+	</div>
 
-</body>
+	<div>
+		<h2>Parallel citations</h2>
+		{% for key, value in sorted_citations.items %}
+    		{% if value %}
+			<h3>{{ key|title }}</h3>
+        		<ul>
+        		{% for item in value %}
+            		<li>{{ item }}</li>
+        		{% endfor %}
+        		</ul>
+    		{% endif %}
+		{% endfor %}
 
-</html>
+	</div>
+
+{% endblock %}
 
