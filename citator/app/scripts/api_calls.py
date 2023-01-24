@@ -33,7 +33,11 @@ def get_database_id(database_id: str) -> str:
         ["cer-rec", ["cer", "rec"]],
         ["exchc-cech", ["exchc", "cech"]],
         ]
-    
+
+    incongruent_database_ids = [
+        ["nlsc", "nlsctd"]
+    ]
+
     # Run through the hyphenated databaseIDs and check to see whether the 
     # database_id component matches either of the second elements in the list. 
     # If so, return the first element in the list as the database_id
@@ -41,6 +45,10 @@ def get_database_id(database_id: str) -> str:
     for database in hyphenated_database_ids:
         if database_id in database[1]:
             return database[0]
+    for database in incongruent_database_ids:
+        if database_id == database[0]:
+            return database[1]
+
     return database_id
 
 
