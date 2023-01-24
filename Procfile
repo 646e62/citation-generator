@@ -1,2 +1,2 @@
-release: python citator/manage.py migrate
-web: gunicorn citator.citator.wsgi --log-file -
+release: python manage.py migrate
+web: gunicorn citator.wsgi --log-file -
