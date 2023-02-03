@@ -2,10 +2,6 @@
 
 {% block content %}
 
-	<div class="title">
-    		<h1>Citator</h1>
-	</div>
-
 	<div class="header">
 
 		<a href="/changelog">Change Log</a>
@@ -17,17 +13,17 @@
 		<label for="url">CanLII URL:</label>
 		<form action="{% url 'process_text' %}" method="post">
 			{% csrf_token %}
-     			<input type="text" name="url" id="url" size="100">	
+     			<input type="text" name="url" id="url" size="100" class="form-control">
 			<p>
 			<br>
 	        	<label for="radio">Pinpoint type:</label>
 			<br>
-			<input type="radio" name="pinpoint_type" value="para"> Paragraph
-			<input type="radio" name="pinpoint_type" value="page"> Page
-			<input type="radio" name="pinpoint_type" value="none" checked> None
+			<input class="form-check-input" type="radio" name="pinpoint_type" value="para"> Paragraph
+			<input class="form-check-input" type="radio" name="pinpoint_type" value="page"> Page
+			<input class="form-check-input" type="radio" name="pinpoint_type" value="none" checked> None
 			<p>
 			<label for="pinpoint">Pinpoint #:</label>
-			<input type="number" min="1" id="pinpoint" name="pinpoint" value="1">	
+			<input type="number" min="1" id="pinpoint" name="pinpoint" value="1">
 			<p>
 			<label for="parallel_citations">Parallel Citations:</label>
 			<br>

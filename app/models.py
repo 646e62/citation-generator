@@ -4,7 +4,7 @@ from django.utils import timezone
 # Create your models here.
 
 class Citation(models.Model):
-    
+
     JURISDICTION_CHOICES = (
         ('ca', 'Canada'),
         ('bc', 'British Columbia'),
@@ -25,7 +25,7 @@ class Citation(models.Model):
     language = models.CharField(max_length=2)
     databaseId = models.CharField(max_length=200)
     case_jurisdiction = models.CharField(
-        max_length=2, 
+        max_length=2,
         choices=JURISDICTION_CHOICES
         )
     court = models.CharField(max_length=10)
@@ -64,7 +64,7 @@ class Changelog(models.Model):
     date = models.DateTimeField(default=timezone.now)
     version = models.CharField(max_length=10)
     changelog = models.TextField()
-    
+
     class Meta:
         verbose_name_plural = "changelogs"
         ordering = ['-date']
@@ -82,6 +82,6 @@ class MyModel(models.Model):
         ('choice_3', 'Choice 3'),
     ]
     my_field = models.CharField(max_length=20, choices=CHOICES)
-   
+
     def __str__(self):
         return self.my_field
