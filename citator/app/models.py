@@ -73,13 +73,4 @@ class Changelog(models.Model):
     def __str__(self):
         return self.changelog
 
-class MyModel(models.Model):
-    CHOICES = [
-        ('choice_1', 'Choice 1'),
-        ('choice_2', 'Choice 2'),
-        ('choice_3', 'Choice 3'),
-    ]
-    my_field = models.CharField(max_length=20, choices=CHOICES)
    
-    def __str__(self):
-        return self.my_field
