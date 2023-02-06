@@ -49,9 +49,7 @@ class Submission(models.Model):
     '''
     url = models.URLField(max_length=200)
     date = models.DateField()
-    times_inputted = models.IntegerField()
     ip_address = models.CharField(max_length=200)
-    user_jurisdiction = models.CharField(max_length=2)
 
     def __str__(self):
         return self.url
