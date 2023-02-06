@@ -1,18 +1,10 @@
 {% extends 'app/base.html' %}
 
 {% block content %}
-	<div class="title">
-    		<h1>Citator</h1>
-			<a href="/">Home</a>
-			<a href="/changelog">Change Log</a>
-	</div>
-
-	<br>
-	
 	<div class="content">
 		<h2>Citation</h2>
 		<p>{{ result }} {{ pinpoint_result }}</p>
-		
+
 	</div>
 
 	<div>
@@ -20,9 +12,9 @@
 		{% for key, value in sorted_citations.items %}
     		{% if value %}
 			<h3>{{ key|title }}</h3>
-        		<ul>
+          <ul class="list-group">
         		{% for item in value %}
-            		<li>{{ item }}</li>
+            		<li class="list-group-item">{{ item }}</li>
         		{% endfor %}
         		</ul>
     		{% endif %}
