@@ -7,39 +7,49 @@
 		<a href="/changelog">Change Log</a>
 		<br><br>
 	</div>
-	<div class="input">
-		{% csrf_token %}
 
-		<label for="url">CanLII URL:</label>
-		<form action="{% url 'process_text' %}" method="post">
-			{% csrf_token %}
-     			<input type="text" name="url" id="url" size="100" class="form-control">
-			<p>
-			<br>
-	        	<label for="radio">Pinpoint type:</label>
-			<br>
-			<input type="radio" name="pinpoint_type" value="para"><br><br>  Paragraph
-			<input type="radio" name="pinpoint_type" value="page"><br> Page
-			<input type="radio" name="pinpoint_type" value="none" checked><br> None
-			<p>
-			<label for="pinpoint">Pinpoint #:</label>
-			<input type="number" min="1" id="pinpoint" name="pinpoint" value="1">
-			<p>
-			<label for="parallel_citations">Parallel Citations:</label>
-			<br>
-			<input type="text" name="parallel_citations" size="100">
-			<p>
-			<input type="submit" value="Submit">
-		</form>
+  <form action="{% url 'process_text' %}" method="post">
+    {% csrf_token %}
+    <div>
+      <label for="url" class="form-label">CanLII URL:</label>
+      <input type="text" name="url" id="url" size="100" class="form-control">
+    </div>
 
-	</div>
+    <label for="pinpoint_type" class="form-label">Pinpoint type:</label>
+
+    <div class="form-check">
+      <label for="paragraph" class="form-check-label">Paragraph</label>
+      <input type="radio" name="pinpoint_type" value="para" class="form-check-input">
+    </div>
+    <div class="form-check">
+      <label for="page" class="form-check-label">Page</label>
+      <input type="radio" name="pinpoint_type" value="page" class="form-check-input">
+    </div>
+    <div class="form-check">
+      <label for="none" class="form-check-label">None</label>
+      <input type="radio" name="pinpoint_type" value="none" class="form-check-input" checked>
+    </div>
+
+    <label for="pinpoint_number" class="form-label">Pinpoint #:</label>
+
+    <input type="number" min="1" id="pinpoint" name="pinpoint" value="1" class="form-control">
+
+    <label for="parallel_citations" class="form-label">Parallel Citations:</label>
+
+    <input type="text" name="parallel_citations" size="100" class="form-control">
+
+    <br>
+    <input type="submit" value="Submit">
+
+  </form>
 
 {% endblock %}
 
 {% block footer %}
 
 	<div class="footer">
-		<p>Created by <a href="
+    <p>Created by <a href="">link</a></p>
+  </div>
 
 {% endblock %}
 
